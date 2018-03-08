@@ -36,7 +36,7 @@ curl http://hgdownload.soe.ucsc.edu/goldenPath/hg19/chromosomes/chr22.fa.gz > ch
 ```
 ##   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
 ##                                  Dload  Upload   Total   Spent    Left  Speed
-##   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  8 10.8M    8  972k    0     0  1425k      0  0:00:07 --:--:--  0:00:07 1423k100 10.8M  100 10.8M    0     0  8439k      0  0:00:01  0:00:01 --:--:-- 8444k
+##   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0 10.8M    0 41607    0     0   171k      0  0:01:04 --:--:--  0:01:04  170k 83 10.8M   83 9183k    0     0  7464k      0  0:00:01  0:00:01 --:--:-- 7460k100 10.8M  100 10.8M    0     0  8429k      0  0:00:01  0:00:01 --:--:-- 8425k
 ```
 
 ### Data Integrity
@@ -179,10 +179,10 @@ curl -O https://raw.githubusercontent.com/Data-Skills/bds-files/master/chapter-0
 ```
 ##   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
 ##                                  Dload  Upload   Total   Spent    Left  Speed
-##   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 1658k  100 1658k    0     0  2143k      0 --:--:-- --:--:-- --:--:-- 2143k
+##   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 1658k  100 1658k    0     0  1708k      0 --:--:-- --:--:-- --:--:-- 1708k
 ##   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
 ##                                  Dload  Upload   Total   Spent    Left  Speed
-##   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  8 25.3M    8 2191k    0     0  8073k      0  0:00:03 --:--:--  0:00:03 8055k100 25.3M  100 25.3M    0     0  44.8M      0 --:--:-- --:--:-- --:--:-- 44.8M
+##   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0 25.3M    0  1929    0     0   2722      0  2:42:54 --:--:--  2:42:54  2720100 25.3M  100 25.3M    0     0  21.9M      0  0:00:01  0:00:01 --:--:-- 21.9M
 ```
 
 Now look at it with `head`:
@@ -1798,7 +1798,7 @@ ls -l fqin
 ```
 
 ```
-## prw-r--r--  1 dlavrov  staff  0 Mar  7 22:36 fqin
+## prw-r--r--  1 dlavrov  staff  0 Mar  7 22:39 fqin
 ```
 
 You’ll notice that this is indeed a special type of file: the p before the file permissions is 
