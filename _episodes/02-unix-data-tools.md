@@ -3,9 +3,7 @@ title: "Unix Data Tools"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+
 
 # Unix Data Tools
 
@@ -22,15 +20,23 @@ basic functionality, their relative strengths are different:
 
 To get a file with data for human chromosome 22 from the GRCh37 (also known as hg19) assembly version:
 
-```{bash, eval=FALSE}
+
+```bash
 wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/chromosomes/chr22.fa.gz
 ```
 
 Notice that the link to chromosome 22 begins with “http” (short for Hyper‐Text Transfer Protocol). wget can also handle FTP links (which start with “ftp,” short for File Transfer Protocol). In general, FTP is preferable to HTTP for large files (and is often recommended by websites like the UCSC Genome Browser). 
 
 To download chromosome 22 with curl, we’d use:
-```{bash, message=FALSE}
+
+```bash
 curl http://hgdownload.soe.ucsc.edu/goldenPath/hg19/chromosomes/chr22.fa.gz > chr22.fa.gz
+```
+
+```
+##   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+##                                  Dload  Upload   Total   Spent    Left  Speed
+##   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  7 10.8M    7  778k    0     0  1141k      0  0:00:09 --:--:--  0:00:09 1140k100 10.8M  100 10.8M    0     0  7799k      0  0:00:01  0:00:01 --:--:-- 7801k
 ```
 
 ### Data Integrity
@@ -51,9 +57,15 @@ what you encounter if a server has precomputed checksums on a set of files. To c
 checksums using SHA-1 we can pass arbitrary strings to the program shasum (on some systems, 
 it’s sha1sum) through standard in:
 
-```{bash}
+
+```bash
 echo "bioinformatics is fun" | shasum
 echo "bioinformatic is fun" | shasum
+```
+
+```
+## f9b70d0d1b0a55263f1b012adab6abf572e3030b  -
+## e7f33eedcfdc9aef8a9b4fec07e58f0cf292aa67  -
 ```
 
 Checksums are reported in hexadecimal format, where each digit can be one of 16 characters: 
@@ -61,8 +73,13 @@ digits 0 through 9, and the letters a, b, c, d, e, and f. The trailing dash indi
 is the SHA-1 checksum of input from standard in. 
 
 We can also use checksums with file input:
-```{bash}
+
+```bash
 shasum chr22.fa.gz
+```
+
+```
+## d012edd46f50d674380460d3b4e91f450688e756  chr22.fa.gz
 ```
 
 When downloading many files, it can get rather tedious to check each checksum individually. 
@@ -70,14 +87,20 @@ The program `shasum` has a convenient solution: it can create and validate again
 containing the checksums of files. We can create a SHA-1 checksum file for all FASTQ files 
 in the data/ directory as follows:
 
-```{bash eval=FALSE}
+
+```bash
 shasum data/*fastq > fastq_checksums.sha
 ```
 
 Then, we can use shasum’s check option (-c) to validate that these files match the original versions:
 
-```{bash}
+
+```bash
 shasum -c fastq_checksums.sha
+```
+
+```
+## shasum: fastq_checksums.sha: No such file or directory
 ```
 
 The program `md5sum` (or `md5` on OS X) calculates MD5 hashes and is similar in operation to `shasum`. 
@@ -147,15 +170,32 @@ a million lines long would quickly fill your shell with text scrolling far too f
 A better option is to take a look at the top of a file with `head`. First, download the file 
 Mus_musculus.GRCm38.75_chr1.bed:
 
-```{bash}
+
+```bash
 curl -O https://raw.githubusercontent.com/Data-Skills/bds-files/master/chapter-07-unix-data-tools/Mus_musculus.GRCm38.75_chr1.bed
 curl -O https://raw.githubusercontent.com/Data-Skills/bds-files/master/chapter-07-unix-data-tools/Mus_musculus.GRCm38.75_chr1.gtf
 ```
 
+```
+##   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+##                                  Dload  Upload   Total   Spent    Left  Speed
+##   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 1658k  100 1658k    0     0  5850k      0 --:--:-- --:--:-- --:--:-- 5861k
+##   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+##                                  Dload  Upload   Total   Spent    Left  Speed
+##   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 25.3M  100 25.3M    0     0  43.8M      0 --:--:-- --:--:-- --:--:-- 43.9M
+```
+
 Now look at it with `head`:
 
-```{bash}
+
+```bash
 head -n 3 Mus_musculus.GRCm38.75_chr1.bed
+```
+
+```
+## 1	3054233	3054733
+## 1	3054233	3054733
+## 1	3054233	3054733
 ```
 
 Notice the -n argument; it controls how many lines to display (the default is 10).
@@ -163,8 +203,15 @@ Notice the -n argument; it controls how many lines to display (the default is 10
 columns there are, what delimiter is being used, some sample rows, and so on.
 `head` has a related command designed to look at the end, or `tail` of a file:
 
-```{bash}
+
+```bash
 tail -n 3 Mus_musculus.GRCm38.75_chr1.bed
+```
+
+```
+## 1	195240910	195241007
+## 1	195240910	195241007
+## 1	195240910	195241007
 ```
 
 We can also use tail to remove the header of a file. Normally the -n argument specifies how many 
@@ -172,25 +219,44 @@ of the last lines of a file to include, but if -n is given a number x preceded w
 tail will start from the xth line. So to chop off a header, we start from the second line with -n +2. 
 Here, we’ll use the command seq to generate a file of 3 numbers, and chop of the first line:
 
-```{bash}
+
+```bash
 seq 3 > nums.txt
 cat nums.txt
 echo "---"
 tail -n +2 nums.txt
 ```
 
+```
+## 1
+## 2
+## 3
+## ---
+## 2
+## 3
+```
+
 Sometimes it’s useful to see both the beginning and end of a file. Foor example, if we have a 
 sorted BED file and we want to see the positions of the first feature and last feature. 
 We can do this using:
 
-```{bash}
+
+```bash
 (head -n 2; tail -n 2) < Mus_musculus.GRCm38.75_chr1.bed
+```
+
+```
+## 1	3054233	3054733
+## 1	3054233	3054733
+## 1	195240910	195241007
+## 1	195240910	195241007
 ```
 
 This is a useful trick, but it’s a bit long to type. To keep it handy, we can create a short‐cut 
 in your shell configuration file, which is either ~/.bashrc or ~/.profile:
 
-```{bash eval=FALSE}
+
+```bash
 # inspect the first and last 3 lines of a file
 i() { (head -n 2; tail -n 2) < "$1" | column -t}
 ```
@@ -203,13 +269,19 @@ For example, suppose we want to grep the Mus_musculus.GRCm38.75_chr1.gtf file fo
 rows containing the string gene_id "ENSMUSG00000025907". We can pipe the standard out of grep 
 directly to head to to see if everything looks correct:
 
-```{bash}
+
+```bash
 grep 'gene_id "ENSMUSG00000025907"' Mus_musculus.GRCm38.75_chr1.gtf | head -n 1
+```
+
+```
+## 1	protein_coding	gene	6206197	6276648	.	+	.	gene_id "ENSMUSG00000025907"; gene_name "Rb1cc1"; gene_source "ensembl_havana"; gene_biotype "protein_coding";
 ```
 
 After printing the first few rows of your data to ensure your pipeline is working prop‐ erly, the head process exits. This is an important feature that helps ensure your pipes don’t needlessly keep processing data. When head exits, your shell catches this and stops the entire pipe, including the grep process too. Under the hood, your shell sends a signal to other programs in the pipe called SIGPIPE—much like the signal that’s sent when you press Control-c (that signal is SIGINT). When building complex pipelines that process large amounts of data, this is extremely important. It means that in a pipeline like:
 
-```{bash, eval=FALSE}
+
+```bash
 grep "some_string" huge_file.txt | program1 | program2 | head -n 5
 ```
 
@@ -227,8 +299,13 @@ quit it, press `q`. Some other commands are listed in the table below:
 Let’s review an example—in this chapter’s directory in the book’s GitHub repository, 
 there’s a file called contaminated.fastq. Let’s look at this with less: 
 
-```{bash}
+
+```bash
 less ./data/contaminated.fastq
+```
+
+```
+## ./data/contaminated.fastq: No such file or directory
 ```
 
 One of the most useful features of less is that it allows you to search text and highlights matches. 
@@ -251,7 +328,8 @@ input.txt` | `step2` | `step3` > output.txt. However, we want to build this up i
 input.txt` first and checking its output, then adding in `step2` and checking that output, and so forth.
 The natural way to do this is with less:
 
-```{bash, eval=FALSE}
+
+```bash
 step1 input.txt | less # inspect output in less 
 step1 input.txt | step2 | less
 step1 input.txt | step2 | step3 | less
@@ -270,22 +348,37 @@ information about a plain-text data file like the number of rows or columns. Wit
 formats like tab-delimited and CSV files, the number of rows is usually the number of lines. We can 
 retrieve this with the program `wc` (for word count):
 
-```{bash}
+
+```bash
 wc ./data/Mus_musculus.GRCm38.75_chr1.bed
+```
+
+```
+## wc: ./data/Mus_musculus.GRCm38.75_chr1.bed: open: No such file or directory
 ```
 
 By default, wc outputs the number of words, lines, and characters of the supplied file. Often, 
 we only care about the number of lines. We can use option -l to just return the number of lines:
 
-```{bash}
+
+```bash
 wc -l ./data/Mus_musculus.GRCm38.75_chr1.bed
+```
+
+```
+## wc: ./data/Mus_musculus.GRCm38.75_chr1.bed: open: No such file or directory
 ```
 
 Another bit of information we usually want about a file is its size. The easiest way to do this is 
 with our old Unix friend, `ls`, with the -lh option (l for long, h for human-readable:
 
-```{bash}
+
+```bash
 ls -lh ./data/Mus_musculus.GRCm38.75_chr1.bed
+```
+
+```
+## ls: ./data/Mus_musculus.GRCm38.75_chr1.bed: No such file or directory
 ```
 
 Here, “M” indicates megabytes; if a file is gigabytes in size, ls -lh will output results in gigabytes, “G.”
@@ -296,8 +389,14 @@ easier way is to use `awk`. `Awk` is an easy, small programming language great a
 text data like TSV and CSV files. We’ll see more of `awk later, but let’s use an awk one-liner 
 to return how many fields a file contains:
 
-```{bash}
+
+```bash
 awk -F "\t" '{print NF; exit}' ./data/Mus_musculus.GRCm38.75_chr1.bed
+```
+
+```
+## awk: can't open file ./data/Mus_musculus.GRCm38.75_chr1.bed
+##  source line number 1
 ```
 
 `awk` was designed for tabular plain-text data processing, and consequently has a built-in variable NF 
@@ -310,10 +409,17 @@ Finding how many columns there are in Mus_musculus.GRCm38.75_chr1.gtf is a bit t
 has a series of comments in the beginning (marked with #) that contain helpful metadata like the genome 
 build, version, date, and accession number. One way to fix this is with a tail trick we saw earlier:
 
-```{bash}
+
+```bash
 tail -n +6 ./data/Mus_musculus.GRCm38.75_chr1.gtf | head -n 1;
 echo "---"
 tail -n +6 ./data/Mus_musculus.GRCm38.75_chr1.gtf | awk -F "\t" '{print NF; exit}'
+```
+
+```
+## tail: ./data/Mus_musculus.GRCm38.75_chr1.gtf: No such file or directory
+## ---
+## tail: ./data/Mus_musculus.GRCm38.75_chr1.gtf: No such file or directory
 ```
 
 While removing a comment header block at the beginning of a file with tail does work, 
@@ -323,8 +429,13 @@ A better solution would be to simply exclude all lines that match a comment line
 Using the program grep (which we’ll talk more about it later), we can easily exclude lines 
 that begin with “#”:
 
-```{bash}
+
+```bash
 grep -v "^#" ./data/Mus_musculus.GRCm38.75_chr1.gtf | awk -F "\t" '{print NF; exit}'
+```
+
+```
+## grep: ./data/Mus_musculus.GRCm38.75_chr1.gtf: No such file or directory
 ```
 
 ### Working with Column Data with cut and Columns
@@ -336,8 +447,13 @@ Mus_musculus.GRCm38.75_chr1.bed file. The simplest way to do this is with `cut`.
 cuts out specified columns (also known as fields) from a text file. By default, cut treats 
 tabs as the delimiters, so to extract the second column we use:
 
-```{bash}
+
+```bash
 cut -f 2 ./data/Mus_musculus.GRCm38.75_chr1.bed | head -n 3
+```
+
+```
+## cut: ./data/Mus_musculus.GRCm38.75_chr1.bed: No such file or directory
 ```
 
 The -f argument is how we specify which columns to keep. The argument -f also allows us to specify 
@@ -350,8 +466,13 @@ file of genomic ranges (e.g., chromosome, start, and end position). We’ll chop
 using the grep command covered earlier, and then use cut to extract the first, fourth, and fifth columns 
 (chromosome, start, end):
 
-```{bash}
+
+```bash
 grep -v "^#" ./data/Mus_musculus.GRCm38.75_chr1.gtf | cut -f1,4,5 | head -n 3
+```
+
+```
+## grep: ./data/Mus_musculus.GRCm38.75_chr1.gtf: No such file or directory
 ```
 
 Note that although our three-column file of genomic positions looks like a BED-formatted file, it’s not 
@@ -360,24 +481,39 @@ due to subtle differences in genomic range formats. We’ll learn more about thi
 cut also allows us to specify the column delimiter character. So, if we were to come across a CSV file 
 containing chromosome names, start positions, and end positions, we could select columns from it, too:
 
-```{bash}
+
+```bash
 cut -d, -f2,3 ./data/Mus_musculus.GRCm38.75_chr1_bed.csv | head -n 3
+```
+
+```
+## cut: ./data/Mus_musculus.GRCm38.75_chr1_bed.csv: No such file or directory
 ```
 
 ### Formatting Tabular Data with column
 As you may have noticed when working with tab-delimited files, it’s not always easy to see which 
 elements belong to a particular column. For example:
 
-```{bash}
+
+```bash
 grep -v "^#" ./data/Mus_musculus.GRCm38.75_chr1.gtf | cut -f1-8 | head -n 3
+```
+
+```
+## grep: ./data/Mus_musculus.GRCm38.75_chr1.gtf: No such file or directory
 ```
 
 While tabs are a terrific delimiter in plain-text data files, our variable width data leads our 
 columns to not stack up well. There’s a fix for this in Unix: program `column -t` (the -t option 
 tells column to treat data as a table). `column -t` produces neat columns that are much easier to read:
 
-```{bash}
+
+```bash
 grep -v "^#" ./data/Mus_musculus.GRCm38.75_chr1.gtf | cut -f1-8 | column -t | head -n 3
+```
+
+```
+## grep: ./data/Mus_musculus.GRCm38.75_chr1.gtf: No such file or directory
 ```
 
 Note that you should only use `columnt -t` to visualize data in the terminal, not to reformat data 
@@ -398,8 +534,13 @@ the pattern (the string or basic regular expression you want to search for), and
 “Olfr418-ps1,” in the file Mus_musculus.GRCm38.75_chr1_genes.txt (which contains all Ensembl 
 gene identifiers and gene names for all protein-coding genes on chromosome 1):
 
-```{bash}
+
+```bash
 grep "Olfr418-ps1" ./data/Mus_musculus.GRCm38.75_chr1_genes.txt
+```
+
+```
+## grep: ./data/Mus_musculus.GRCm38.75_chr1_genes.txt: No such file or directory
 ```
 
 The quotes around the pattern aren’t required, but it’s safest to use quotes so our shells won’t 
@@ -407,8 +548,13 @@ try to interpret any symbols. grep returns any lines that match the pattern.
 
 One useful option when using grep is --color=auto. This option enables terminal colors, so the matching part of the pattern is colored in your terminal.
 
-```{bash}
+
+```bash
 grep --color=auto "Olfr" ./data/Mus_musculus.GRCm38.75_chr1_genes.txt | head -n 5
+```
+
+```
+## grep: ./data/Mus_musculus.GRCm38.75_chr1_genes.txt: No such file or directory
 ```
 
 > ## GNU, BSD, and the Flavors of Grep
@@ -432,8 +578,13 @@ how we excluded the commented lines from our GTF file. The option we used was -v
 suppose you wanted a list of all genes that contain “Olfr,” except “Olfr1413.” Using -v and chaining together 
 to calls to grep with pipes, we could use:
 
-```{bash}
+
+```bash
 grep Olfr ./data/Mus_musculus.GRCm38.75_chr1_genes.txt | grep -v Olfr1413
+```
+
+```
+## grep: ./data/Mus_musculus.GRCm38.75_chr1_genes.txt: No such file or directory
 ```
 
 But beware! Partially matching may bite us here: while we wanted to exclude “Olfr1413,” this command would 
@@ -453,8 +604,13 @@ aren’t quite as powerful as the ones in these lan‐ guages. Still, for many s
 quite well. For example, if we wanted to find the Ensembl gene identifiers for both “Olfr1413” and “Olfr1411,” 
 we could use:
 
-```{bash}
+
+```bash
 grep "Olfr141[13]" ./data/Mus_musculus.GRCm38.75_chr1_genes.txt
+```
+
+```
+## grep: ./data/Mus_musculus.GRCm38.75_chr1_genes.txt: No such file or directory
 ```
 
 Here, we’re using a shared prefix between these two gene names, and allowing the last single character 
@@ -465,8 +621,13 @@ allows us to turn on ERE with the -E option (which on many systems is aliased to
 alternation (regular expression jargon for matching one of several possible patterns) to match either “Olfr218” 
 or “Olfr1416.” The syntax uses a pipe symbol (|):
 
-```{bash}
+
+```bash
 grep -E "(Olfr1413|Olfr1411)" ./data/Mus_musculus.GRCm38.75_chr1_genes.txt
+```
+
+```
+## grep: ./data/Mus_musculus.GRCm38.75_chr1_genes.txt: No such file or directory
 ```
 
 We don't have time to talk about regular expressions here. The important part is that you recognize there’s 
@@ -475,14 +636,25 @@ a difference and know the terms necessary to find further help when you need it.
 `grep` has an option to count how many lines match a pattern: -c. For example, suppose we wanted a quick look 
 at how many genes start with “Olfr”:
 
-```{bash}
+
+```bash
 grep -c "\tOlfr" ./data/Mus_musculus.GRCm38.75_chr1_genes.txt
+```
+
+```
+## grep: ./data/Mus_musculus.GRCm38.75_chr1_genes.txt: No such file or directory
 ```
 
 Alternatively, we could pipe the matching lines to wc -l:
 
-```{bash}
+
+```bash
 grep "\tOlfr" ./data/Mus_musculus.GRCm38.75_chr1_genes.txt | wc -l
+```
+
+```
+## grep: ./data/Mus_musculus.GRCm38.75_chr1_genes.txt: No such file or directory
+##        0
 ```
 
 Counting matching lines is extremely useful—especially with plain-text data where lines represent rows, 
@@ -491,23 +663,38 @@ For example, suppose we wanted to know how many small nuclear RNAs are in our Mu
 file. snRNAs are annotated as gene_biotype "snRNA" in the last column of this GTF file. A simple way to count 
 these features would be:
 
-```{bash}
+
+```bash
 grep -c 'gene_biotype "snRNA"' ./data/Mus_musculus.GRCm38.75_chr1.gtf
+```
+
+```
+## grep: ./data/Mus_musculus.GRCm38.75_chr1.gtf: No such file or directory
 ```
 
 Note here how we’ve used single quotes to specify our pattern, as our pattern includes the double-quote characters (").
 By default, `grep` is outputting the entire matching line. Sometimes, however, it’s useful to use `grep` to extract 
 only the matching part of the pattern. We can do this with -o:
 
-```{bash}
+
+```bash
 grep -o "Olfr.*" ./data/Mus_musculus.GRCm38.75_chr1_genes.txt | head -n 3
+```
+
+```
+## grep: ./data/Mus_musculus.GRCm38.75_chr1_genes.txt: No such file or directory
 ```
 
 Or, suppose we wanted to extract all values of the “gene_id” field from the last column of our 
 Mus_musculus.GRCm38.75_chr1.gtf file. This is easy with -o:
 
-```{bash}
+
+```bash
 grep -E -o 'gene_id "\w+"' ./data/Mus_musculus.GRCm38.75_chr1.gtf | head -n 5
+```
+
+```
+## grep: ./data/Mus_musculus.GRCm38.75_chr1.gtf: No such file or directory
 ```
 
 Here, we’re using extended regular expressions to capture all gene names in the field. However, as you 
@@ -515,8 +702,13 @@ can see there’s a great deal of redundancy: our GTF file has multiple features
 start codons, etc.) that all have the same gene name. What if you want just a list of unique, sorted gene 
 names?
 
-```{bash}
+
+```bash
 grep -E -o 'gene_id "\w+"' ./data/Mus_musculus.GRCm38.75_chr1.gtf | cut -f2 -d" " | sed 's/"//g' | sort | uniq | head -n 10
+```
+
+```
+## grep: ./data/Mus_musculus.GRCm38.75_chr1.gtf: No such file or directory
 ```
 
 As you can see, we are about half-way through the tools we need to learn!
@@ -536,16 +728,26 @@ this issue at some point.
 First, to look at a file’s encoding use the program `file`, which infers what the encoding is from the file’s 
 content. For example, we see that many of the example files we’ve been working with in this chapter are ASCII-encoded:
 
-```{bash}
+
+```bash
 file ./data/Mus_musculus.GRCm38.75_chr1*
+```
+
+```
+## ./data/Mus_musculus.GRCm38.75_chr1*: cannot open `./data/Mus_musculus.GRCm38.75_chr1*' (No such file or directory)
 ```
 
 Some files will have non-ASCII encoding schemes, and may contain special characters. The most common character 
 encoding scheme is UTF-8, which is a superset of ASCII but allows for special characters. For example, the utf8.txt 
 included in the GitHub directory is a UTF-8 file, as evident from file’s output:
 
-```{bash}
+
+```bash
 file ./data/utf8.txt
+```
+
+```
+## ./data/utf8.txt: cannot open `./data/utf8.txt' (No such file or directory)
 ```
 
 Because UTF-8 is a superset of ASCII, if we were to delete the special characters in this file and save it, 
@@ -555,29 +757,51 @@ you'll run into are from data generated by humans, which through copying and pas
 lead to unintentional special characters. For example, the improper.fa file in the GitHub repository looks like 
 a regular FASTA file upon first inspection:
 
-```{bash}
+
+```bash
 cat ./data/improper.fa
+```
+
+```
+## cat: ./data/improper.fa: No such file or directory
 ```
 
 However, finding the reverse complement of these sequences using `bioawk (don’t worry about the details of this 
 program yet—we’ll cover it later) leads to strange results:
 
-```{bash}
+
+```bash
 bioawk -cfastx '{print revcomp($seq)}' ./data/improper.fa
+```
+
+```
+## bioawk: can't open file ./data/improper.fa
+##  source line number 1
 ```
 
 What’s going on? We have a non-ASCII character in our second sequence:
 
-```{bash}
+
+```bash
 file ./data/improper.fa
+```
+
+```
+## ./data/improper.fa: cannot open `./data/improper.fa' (No such file or directory)
 ```
 
 We can use `hexdump` program to identify which letter is causing this problem. 
 The hexdump program returns the hexadecimal values of each character. 
 With the -c option, this also prints the character:
 
-```{bash}
+
+```bash
 hexdump -c data/improper.fa
+```
+
+```
+## hexdump: data/improper.fa: No such file or directory
+## hexdump: data/improper.fa: Bad file descriptor
 ```
 
 As we can see, the character after “CGAGCGAG” in the second sequence is clearly not an ASCII character. 
@@ -595,10 +819,17 @@ sort data are as follows:
 Sort, like cut, is designed to work with plain-text data with columns. Running
 sort without any arguments simply sorts a file alphanumerically by line:
 
-```{bash}
+
+```bash
 cat ./data/example.bed
 echo "======="
 sort ./data/example.bed
+```
+
+```
+## cat: ./data/example.bed: No such file or directory
+## =======
+## sort: open failed: ./data/example.bed: No such file or directory
 ```
 
 Because chromosome is the first column, sorting by line effectively groups 
@@ -619,8 +850,13 @@ tabular data properly. There are two additional features we need:
 
 `sort` has a simple syntax to do this:
 
-```{bash}
+
+```bash
 sort -k1,1 -k2,2n ./data/example.bed
+```
+
+```
+## sort: open failed: ./data/example.bed: No such file or directory
 ```
 
 Here, -k specifies the sorting keys and their order. Each -k argument takes a
@@ -649,7 +885,8 @@ sort must compare multiple lines to sort a file. If you have a file that you sus
 sorted, it’s much cheaper to validate that it’s indeed sorted rather than resort it. We can check 
 if a file is sorted according to our -k arguments using -c:
 
-```{bash}
+
+```bash
 sort -k1,1 -k2,2n -c ./data/example_sorted.bed
 echo $?
 echo "========"
@@ -657,14 +894,28 @@ sort -k1,1 -k2,2n -c ./data/example.bed
 echo $?
 ```
 
+```
+## sort: open failed: ./data/example_sorted.bed: No such file or directory
+## 2
+## ========
+## sort: open failed: ./data/example.bed: No such file or directory
+## 2
+```
+
 The first file is already sorted by -k1,1 -k2,2n -c, so sort exits with exit status 0 (true).
 The second file is not sorted by -k1,1 -k2,2n -c, so sort returns the first out-of-order row 
 it finds and exits with status 1 (false).
 
 It’s also possible to sort in reverse order with the -r argument:
-```{bash}
+
+```bash
 sort -k1,1 -k2,2n -r ./data/example.bed
 sort -k1,1 -k2,2nr ./data/example.bed
+```
+
+```
+## sort: open failed: ./data/example.bed: No such file or directory
+## sort: open failed: ./data/example.bed: No such file or directory
 ```
 
 There are a few other useful sorting options to discuss, but these are available for GNU sort 
@@ -673,14 +924,24 @@ sorting routine that understands numbers inside strings. why this is useful, con
 example2.bed. Sorting with sort -k1,1 -k2,2n groups chromosomes but doesn’t naturally order 
 them as humans would:
 
-```{bash}
+
+```bash
 sort -k1,1 -k2,2n ./data/example2.bed
+```
+
+```
+## sort: open failed: ./data/example2.bed: No such file or directory
 ```
 
 However, with V appended to -k1,1 we get the desired result:
 
-```{bash}
+
+```bash
 sort -k1,1V -k2,2n ./data/example2.bed
+```
+
+```
+## sort: stray character in field spec: invalid field specification `1,1V'
 ```
 
 In practice, Unix sort scales well to the moderately large text data we’ll need to sort 
@@ -692,7 +953,8 @@ as fits. Increasing the size of this buffer allows more data to be sorted in mem
 which reduces the amount of temporary sorted files that need to be written and read 
 off the disk. For example:
 
-```{bash, eval=FALSE}
+
+```bash
 sort -k1,1 -k4,4n -S2G ./data/Mus_musculus.GRCm38.75_chr1_random.gtf
 ```
 
@@ -702,7 +964,8 @@ gigabyte, as well as % for specifying what percent of total memory to use (e.g.,
 Another option (only available in GNU sort) is to run sort with the --parallel option. 
 For example, to use four cores to sort Mus_musculus.GRCm38.75_chr1_random.gtf:
 
-```{bash, eval=FALSE}
+
+```bash
 sort -k1,1 -k4,4n --parallel 4 ./data/Mus_musculus.GRCm38.75_chr1_random.gtf
 ```
 
@@ -717,18 +980,30 @@ lines with consecutive duplicates removed. While this is a relatively simple
 functionality, you will use uniq very frequently in command-line data processing. 
 Let’s first see an example of its behavior:
 
-```{bash}
+
+```bash
 cat ./data/letters.txt
 echo "=========="
 uniq ./data/letters.txt
+```
+
+```
+## cat: ./data/letters.txt: No such file or directory
+## ==========
+## uniq: ./data/letters.txt: No such file or directory
 ```
 
 As you can see, `uni`q only removes consecutive duplicate lines (keeping one). If instead 
 we did want to find all unique lines in a file, we would first sort all lines using `sort` 
 so that all identical lines are grouped next to each other, and then run `uniq`:
 
-```{bash}
+
+```bash
 sort ./data/letters.txt | uniq
+```
+
+```
+## sort: open failed: ./data/letters.txt: No such file or directory
 ```
 
 If we had lowercase letters mixed in this file as well, we could add the option `-i` to 
@@ -736,32 +1011,60 @@ If we had lowercase letters mixed in this file as well, we could add the option 
 very often in command-line data processing: -c. This option shows the counts of occurrences 
 next to the unique lines. For example:
 
-```{bash}
+
+```bash
 uniq -c ./data/letters.txt
 echo "=========="
 sort ./data/letters.txt | uniq -c
+```
+
+```
+## uniq: ./data/letters.txt: No such file or directory
+## ==========
+## sort: open failed: ./data/letters.txt: No such file or directory
 ```
 
 Both `sort | uniq` and `sort | uniq -c` are frequently used shell idioms in bioinformatics 
 and worth memorizing. Combined with other Unix tools like `grep` and `cut`, `sort` and `uniq` 
 can be used to summarize columns of tabular data:
 
-```{bash}
+
+```bash
 grep -v "^#" ./data/Mus_musculus.GRCm38.75_chr1.gtf | cut -f3 | sort | uniq -c
+```
+
+```
+## grep: ./data/Mus_musculus.GRCm38.75_chr1.gtf: No such file or directory
 ```
 
 Because `sort` and `uniq` are line-based, we can create lines from multiple columns to count 
 combinations, like how many of each feature (column 3 in this example GTF) are on each 
 strand (column 7):
 
-```{bash}
+
+```bash
 grep -v "^#" ./data/Mus_musculus.GRCm38.75_chr1.gtf | cut -f3,7 | sort | uniq -c
+```
+
+```
+## grep: ./data/Mus_musculus.GRCm38.75_chr1.gtf: No such file or directory
 ```
 
 Or, if you want to see the number of features belonging to a particular gene identifier:
 
-```{bash}
+
+```bash
 grep "ENSMUSG00000033793" Mus_musculus.GRCm38.75_chr1.gtf | cut -f3 | sort | uniq -c
+```
+
+```
+##   13 CDS
+##    3 UTR
+##   14 exon
+##    1 gene
+##    1 start_codon
+##    1 stop_codon
+##    1 transcript
 ```
 
 These count tables are incredibly useful for summarizing columns of categorical data. 
@@ -772,14 +1075,26 @@ summary statistics about our plain-text data files.
 to output duplicated lines only. For example, the mm_gene_names.txt file (which contains a 
 list of gene names) does not have duplicates:
 
-```{bash}
+
+```bash
 uniq -d mm_gene_names.txt | wc -l
+```
+
+```
+## uniq: mm_gene_names.txt: No such file or directory
+##        0
 ```
 
 A file with duplicates, like the test.bed file, has multiple lines returned: 
 
-```{bash}
+
+```bash
 uniq -d test.bed | wc -l
+```
+
+```
+## uniq: test.bed: No such file or directory
+##        0
 ```
 
 ### `join`
@@ -787,10 +1102,17 @@ The Unix tool join is used to join different files together by a common column. 
 to understand with simple test data. Let’s use our example.bed BED file, and example_lengths.txt, 
 a file containing the same chromosomes as example.bed with their lengths. The files look like this:
 
-```{bash}
+
+```bash
 cat example.bed
 echo "=========="
 cat example_lengths.txt
+```
+
+```
+## cat: example.bed: No such file or directory
+## ==========
+## cat: example_lengths.txt: No such file or directory
 ```
 
 Our goal is to append the chromosome length alongside each feature (note that the result will 
@@ -800,35 +1122,59 @@ To append the chromosome lengths to example.bed, we first need to sort both file
 to be joined on. This is a vital step—Unix’s join will not work unless both files are sorted by 
 the column to join on. We can appropriately sort both files with sort:
 
-```{bash}
+
+```bash
 sort -k1,1 example.bed > example_sorted.bed
 sort -c -k1,1 example_lengths.txt # verifies is already sorted
+```
+
+```
+## sort: open failed: example.bed: No such file or directory
+## sort: open failed: example_lengths.txt: No such file or directory
 ```
 
 The basic syntax is `join -1 <file_1_field> -2 <file_2_field> <file_1> <file_2>`. So, with 
 example.bed and example_lengths.txt this would be:
 
-```{bash}
+
+```bash
 join -1 1 -2 1 example_sorted.bed example_lengths.txt > example_with_lengths.txt
 cat example_with_lengths.txt
+```
+
+```
+## join: example_lengths.txt: No such file or directory
 ```
 
 There are many types of joins. For now, it’s important that we make sure join is working 
 as we expect. Our expectation is that this join should not lead to fewer rows than in our 
 example.bed file. We can verify this with wc -l:
 
-```{bash}
+
+```bash
 wc -l example_sorted.bed example_with_lengths.txt
+```
+
+```
+##        0 example_sorted.bed
+##        0 example_with_lengths.txt
+##        0 total
 ```
 
 We see that we have the same number of lines in our original file and our joined file. 
 However, look what happens if our second file, example_lengths.txt, is truncated such 
 that it doesn’t have the lengths for chr3:
 
-```{bash}
+
+```bash
 head -n2 example_lengths.txt > example_lengths_alt.txt #truncate file
 join -1 1 -2 1 example_sorted.bed example_lengths_alt.txt
 join -1 1 -2 1 example_sorted.bed example_lengths_alt.txt | wc -l
+```
+
+```
+## head: example_lengths.txt: No such file or directory
+##        0
 ```
 
 Because chr3 is absent from example_lengths_alt.txt, our join omits rows from 
@@ -838,7 +1184,8 @@ GNU join implements the -a option to include unpairable lines—ones that do not
 an entry in either file. To use -a, we spec‐ ify which file is allowed to have 
 unpairable entries:
 
-```{bash}
+
+```bash
 gjoin -1 1 -2 1 -a 1 example_sorted.bed example_lengths_alt.txt # GNU join only
 ```
 
@@ -891,16 +1238,28 @@ of writing text-processing programs with Awk.
 
 Let’s see some examples.
 First, we can simply mimic cat by omitting a pattern and printing an entire record with the variable $0:
-```{bash}
+
+```bash
 awk '{ print $0 }' example.bed #emulating cat
+```
+
+```
+## awk: can't open file example.bed
+##  source line number 1
 ```
 
 print prints a string. Optionally, we could omit the $0, because print called without an argument
 would print the current record.
 
 Awk can also mimic cut:
-```{bash}
+
+```bash
 awk '{ print $2 "\t" $3 }' example.bed #emulating cut
+```
+
+```
+## awk: can't open file example.bed
+##  source line number 1
 ```
 
 Here, we’re making use of Awk’s string concatenation. Two strings are concatenated if 
@@ -915,8 +1274,14 @@ start position) was greater than 18. Awk supports arithmetic with the standard o
 +, -, *, /, % (remainder), and ^ (exponentiation). We can subtract within a pattern to 
 calculate the length of a feature, and filter on that expression:
 
-```{bash}
+
+```bash
 awk '$3 - $2 > 18' example.bed
+```
+
+```
+## awk: can't open file example.bed
+##  source line number 1
 ```
 
 Here are some other Awk comparison and logical operations:  
@@ -936,8 +1301,14 @@ We can also chain patterns, by using logical operators && (AND), || (OR), and ! 
 
 For example, if we wanted all lines on chromosome 1 with a length greater than 10:
 
-```{bash}
+
+```bash
 awk '$1 ~ /chr1/ && $3 - $2 > 10' example.bed
+```
+
+```
+## awk: can't open file example.bed
+##  source line number 1
 ```
 
 The first pattern, $1 ~ /chr1/, is how we specify a regular expression. Regular expressions 
@@ -948,8 +1319,14 @@ We can combine patterns and more complex actions than just printing the entire r
 if we wanted to add a column with the length of this feature (end position - start position) for 
 only chromosomes 2 and 3, we could use:
 
-```{bash}
+
+```bash
 awk '$1 ~ /chr2|chr3/ { print $0 "\t" $3 - $2 }' example.bed
+```
+
+```
+## awk: can't open file example.bed
+##  source line number 1
 ```
 
 So far, these exercises have illustrated two ways Awk can come in handy:  
@@ -966,7 +1343,8 @@ is useful to print data summaries at the end of file processing. For example, su
 we wanted to calculate the mean feature length in example.bed. We would have to take 
 the sum feature lengths, and then divide by the total number of records. We can do this with:
 
-```{bash}
+
+```bash
 awk 'BEGIN{ s = 0 }; { s += ($3-$2) }; END{ print "mean: " s/NR };'
 ```
 
@@ -986,25 +1364,38 @@ separators. These variables can be set using Awk’s -v argument, which sets a v
 using the syntax awk -v VAR=val. So, we could convert a three-column CSV to a tab file 
 by just setting the field separator F and output field separator OFS: 
 
-```{bash eval=FALSE}
+
+```bash
 awk -F"," -v OFS="\t" {print $1,$2,$3}
 ```
 
-Setting OFS="\t" saves a few extra characters when outputting tab-delimited results with 
+Setting OFS="\t" saves a few extra characters when outputting tab-delimited results with/ 
 statements like print "$1 "\t" $2 "\t" $3.
 
 We can use NR to extract ranges of lines, too; for example, if we wanted to extract all 
 lines between 3 and 5 (inclusive):
 
-```{bash}
+
+```bash
 awk 'NR >= 3 && NR <= 5' ./data/example.bed
+```
+
+```
+## awk: can't open file ./data/example.bed
+##  source line number 1
 ```
 
 Awk makes it easy to convert between bioinformatics files like BED and GTF. For example, 
 we could generate a three-column BED file from Mus_musculus.GRCm38.75_chr1.gtf as follows:
 
-```{bash}
+
+```bash
 awk '!/^#/ { print $1 "\t" $4-1 "\t" $5 }' ./data/Mus_musculus.GRCm38.75_chr1.gtf | head -n 3
+```
+
+```
+## awk: can't open file ./data/Mus_musculus.GRCm38.75_chr1.gtf
+##  source line number 1
 ```
 
 Note that we subtract 1 from the start position to convert to BED format. This is because BED 
@@ -1016,16 +1407,27 @@ array by simply assigning a value to a key. For example, suppose we wanted to co
 of features (third column) belonging to the gene “Lypla1.” We could do this by incrementing 
 their values in an associative array:
 
-```{bash}
+
+```bash
 awk '/Lypla1/ { feature[$3] += 1 }; END { for (k in feature) print k "\t" feature[k] }' ./data/Mus_musculus.GRCm38.75_chr1.gtf
+```
+
+```
+## awk: can't open file ./data/Mus_musculus.GRCm38.75_chr1.gtf
+##  source line number 1
 ```
 
 This example illustrates that Awk really is a programming language: we can use standard programming statements like if, for, and while, and Awk has several useful built-in functions within action blocks. However, when Awk programs become complex or start to span multiple lines, you may want to switch to Python as you’ll have much more functionality at your disposal.
 
 It’s worth noting that there’s an entirely Unix way to count features of a particular gene: grep, cut, sort, and uniq -c:
 
-```{bash}
+
+```bash
 grep "Lypla1" ./data/Mus_musculus.GRCm38.75_chr1.gtf | cut -f 3 | sort | uniq -c
+```
+
+```
+## grep: ./data/Mus_musculus.GRCm38.75_chr1.gtf: No such file or directory
 ```
 
 However, if we needed to also filter on column-specific information (e.g., strand), an approach using just base Unix tools would be quite messy. With Awk, adding an additional filter would be trivial: we’d just use && to add another expression in the pattern.
@@ -1038,44 +1440,88 @@ and install Bioawk from source, or if you use Mac OS X’s Homebrew package mana
 in homebrew-science (so you can install with `brew tap homebrew/science; brew install bioawk`).
 The basic idea of Bioawk is that we specify what bioinformatics format we’re working with, and Bioawk will automatically set variables for each field (just as regular Awk sets the columns of a tabular text file to $1, $1, $2, etc.). For Bioawk to set these fields, specify the format of the input file or stream with -c. Let’s look at Bioawk’s supported input formats and what variables these formats set:
 
-```{bash}
+
+```bash
 bioawk -c help bed
+```
+
+```
+## bed:
+## 	1:chrom 2:start 3:end 4:name 5:score 6:strand 7:thickstart 8:thickend 9:rgb 10:blockcount 11:blocksizes 12:blockstarts 
+## sam:
+## 	1:qname 2:flag 3:rname 4:pos 5:mapq 6:cigar 7:rnext 8:pnext 9:tlen 10:seq 11:qual 
+## vcf:
+## 	1:chrom 2:pos 3:id 4:ref 5:alt 6:qual 7:filter 8:info 
+## gff:
+## 	1:seqname 2:source 3:feature 4:start 5:end 6:score 7:filter 8:strand 9:group 10:attribute 
+## fastx:
+## 	1:name 2:seq 3:qual 4:comment
 ```
 
 As an example of how this works, let’s read in example.bed and append a column with the length of 
 the feature (end position - start position) for all protein coding genes:
 
-```{bash}
+
+```bash
 bioawk -c gff '$3 ~ /gene/ && $2 ~ /protein_coding/ {print $seqname,$end-$start}' ./data/Mus_musculus.GRCm38.75_chr1.gtf | head -n 4
+```
+
+```
+## bioawk: can't open file ./data/Mus_musculus.GRCm38.75_chr1.gtf
+##  source line number 1
 ```
 
 Bioawk is also quite useful for processing FASTA/FASTQ files. For example, we could use it 
 to turn a FASTQ file into a FASTA file:
 
-```{bash}
+
+```bash
 bioawk -c fastx '{print ">"$name"\n"$seq}' ./data/contam.fastq | head -n 4
+```
+
+```
+## bioawk: can't open file ./data/contam.fastq
+##  source line number 1
 ```
 
 Note that Bioawk detects whether to parse input as FASTQ or FASTA when we use -c fastx.  
 
 Bioawk can also serve as a method of counting the number of FASTQ/FASTA entries:
 
-```{bash}
+
+```bash
 bioawk -c fastx 'END{print NR}' ./data/contam.fastq
+```
+
+```
+## bioawk: can't open file ./data/contam.fastq
+##  source line number 1
 ```
 
 Or Bioawk’s function `revcomp()` can be used to reverse complement a sequence:
 
-```{bash}
+
+```bash
 bioawk -c fastx '{print ">"$name"\n"revcomp($seq)}' contam.fastq | head -n 4
+```
+
+```
+## bioawk: can't open file contam.fastq
+##  source line number 1
 ```
 
 Bioawk is also useful for creating a table of sequence lengths from a FASTA file. 
 For example, to create a table of all chromosome lengths of the Mus musculus genome:
 
-```{bash}
+
+```bash
 bioawk -c fastx '{print $name,length($seq)}' Mus_musculus.GRCm38.75.dna_rm.toplevel.fa.gz > mm_genome.txt
 head -n 4 mm_genome.txt
+```
+
+```
+## bioawk: can't open file Mus_musculus.GRCm38.75.dna_rm.toplevel.fa.gz
+##  source line number 1
 ```
 
 Finally, Bioawk has two options that make working with plain tab-delimited files easier: 
@@ -1085,15 +1531,26 @@ unspecific tab-delimited formats with a header as the first line. This option se
 field variables, but uses the names given in the header. Suppose we had a simple 
 tab-delimited file containing variant names and genotypes for individuals (in columns):
 
-```{bash}
+
+```bash
 head -n 4 ./data/genotypes.txt
+```
+
+```
+## head: ./data/genotypes.txt: No such file or directory
 ```
 
 If we wanted to return all variants for which individuals ind_A and ind_B have identical genotypes
 (note that this assumes a fixed allele order like ref/alt or major/minor):
 
-```{bash}
+
+```bash
 bioawk -c hdr '$ind_A == $ind_B {print $id}' ./data/genotypes.txt
+```
+
+```
+## bioawk: can't open file ./data/genotypes.txt
+##  source line number 1
 ```
 
 
@@ -1120,10 +1577,17 @@ that’s most useful for day-to-day bioinformatics tasks.
 simple example: converting a file (chroms.txt) containing a single column of chromosomes in the 
 format “chrom12,” “chrom2,” and so on to the format “chr12,” “chr2,” and so on:
 
-```{bash}
+
+```bash
 head -n 3 chroms.txt # before sed
 echo "=========="
 sed 's/chrom/chr/' chroms.txt | head -n 3
+```
+
+```
+## head: chroms.txt: No such file or directory
+## ==========
+## sed: chroms.txt: No such file or directory
 ```
 
 It’s a simple but important change: although chroms.txt is a mere 10 lines long, it could 
@@ -1150,8 +1614,13 @@ example, suppose we wanted to capture the chromo‐ some name, and start and end
 in a string containing a genomic region in the format "chr1:28427874-28425431", and 
 output this as three columns. We could use:
 
-```{bash}
+
+```bash
 echo "chr1:28427874-28425431" | gsed -E 's/^(chr[^:]+):([0-9]+)-([0-9]+)/\1\t\2\t\3/'
+```
+
+```
+## chr1	28427874	28425431
 ```
 
 The first component of this regular expression is ^(chr[^:]+):. This matches the text 
@@ -1163,10 +1632,17 @@ The second and third components of this regular expression are the same: match a
 more than one number. Finally, our replacement is these three captured groups, interspersed 
 with tabs, \t. Here are a few more ways to do the same thing:
 
-```{bash}
+
+```bash
 echo "chr1:28427874-28425431" | sed 's/[:-]/\t/g'
 echo "chr1:28427874-28425431" | sed 's/:/\t/' | sed 's/-/\t/' # or sed -e 's/:/\t/' -e 's/-/\t/'
 echo "chr1:28427874-28425431" | tr ':-' '\t'
+```
+
+```
+## chr1t28427874t28425431
+## chr1t28427874t28425431
+## chr1	28427874	28425431
 ```
 
 Note, that in the last example we use `tr` to translate both delimiters to a tab character. 
@@ -1177,8 +1653,14 @@ isn’t what we want (and can lead to erroneous results). To print only the line
 we need to disable sed from outputting all lines with `-n` option and than append the `p` flag after 
 the last slash:
 
-```{bash}
+
+```bash
 grep -v "^#" Mus_musculus.GRCm38.75_chr1.gtf | head -n 3 | sed -E -n 's/.*transcript_id "([^"]+)".*/\1/p'
+```
+
+```
+## ENSMUST00000160944
+## ENSMUST00000160944
 ```
 
 This example uses an important regular expression idiom: capturing text between delimiters 
@@ -1190,10 +1672,17 @@ brackets.
 It’s also possible to select and print certain ranges of lines with sed. In this case, we’re 
 not doing pattern matching, so we don’t need slashes:
 
-```{bash}
+
+```bash
 sed -n '1,5p' ./data/Mus_musculus.GRCm38.75_chr1.gtf
 echo "============"
 sed -n '40,45p' ./data/Mus_musculus.GRCm38.75_chr1.gtf
+```
+
+```
+## sed: ./data/Mus_musculus.GRCm38.75_chr1.gtf: No such file or directory
+## ============
+## sed: ./data/Mus_musculus.GRCm38.75_chr1.gtf: No such file or directory
 ```
 
 Substitutions make up the majority of sed’s usage cases, but this is just scratching the surface 
@@ -1225,13 +1714,25 @@ useful primarily to group sequential commands together (such that their output i
 This gives us a new way to construct clever oneliners and has practical uses in command-line data 
 processing. Let’s look at a toy example first:
 
-```{bash}
+
+```bash
 echo "this command"; echo "that command" | sed 's/command/step/'
 ```
 
+```
+## this command
+## that step
+```
 
-```{bash}
+
+
+```bash
 (echo "this command"; echo "that command") | sed 's/command/step/'
+```
+
+```
+## this step
+## that step
 ```
 
 In the first example, only the second command’s standard out is piped into sed. But grouping both 
@@ -1247,13 +1748,20 @@ We can solve this problem using a subshell to group sequential commands that pri
 standard out and sort all other lines by chromosome and start position, printing all lines to standard 
 out after the header:
 
-```{bash}
+
+```bash
 (zgrep "^#" Mus_musculus.GRCm38.75_chr1.gtf.gz; zgrep -v "^#" Mus_musculus.GRCm38.75_chr1.gtf.gz | sort -k1,1 -k4,4n) | less
+```
+
+```
+## zgrep: Mus_musculus.GRCm38.75_chr1.gtf.gz: No such file or directory
+## zgrep: Mus_musculus.GRCm38.75_chr1.gtf.gz: No such file or directory
 ```
 
 We can redirect the output to gzip to compress this stream before writing it to disk:
 
-```{bash eval=FALSE}
+
+```bash
 (zgrep "^#" ./data/Mus_musculus.GRCm38.75_chr1.gtf.gz; zgrep -v "^#" ./data/Mus_musculus.GRCm38.75_chr1.gtf.gz | sort -k1,1 -k4,4n) | ` | gzip > ./data/Mus_musculus.GRCm38.75_chr1_sorted.gtf.gz
 ```
 
@@ -1264,7 +1772,8 @@ data-processing pipelines. However, some programs won’t interface with the Uni
 we’ve come to love and depend on. For example, certain bioinformatics tools read in multiple 
 input files and write to multiple output files:
 
-```{bash eval=FALSE}
+
+```bash
 processing_tool --in1 in1.fq --in2 in2.fq --out1 out2.fq --out2.fq
 ```
 
@@ -1282,9 +1791,14 @@ computer science), is a special sort of file. Regular pipes are anonymous—they
 and only persist while both processes are running. Named pipes behave like files, and are persistent 
 on your filesystem. We can create a named pipe with the program mkfifo:
 
-```{bash}
+
+```bash
 mkfifo fqin
 ls -l fqin
+```
+
+```
+## prw-r--r--  1 dlavrov  staff  0 Mar  7 22:12 fqin
 ```
 
 You’ll notice that this is indeed a special type of file: the p before the file permissions is 
@@ -1293,10 +1807,15 @@ data out of the pipe. As a toy example, we can simulate this by using echo to re
 into a named pipe (running it in the background, so we can have our prompt back), and then cat to 
 read the data back out:
 
-```{bash}
+
+```bash
 echo "hello, named pipes" > fqin &
 cat fqin
 rm fqin
+```
+
+```
+## hello, named pipes
 ```
 
 Treating the named pipe just as we would any other file, we can access the data we wrote to it 
@@ -1315,8 +1834,13 @@ so you can use it in commands as you would a regular file or named pipe. This is
 at first, but it should be clearer with some examples. If we were to re-create the previous toy e
 xample with process substitution, it would look as follows:
 
-```{bash}
+
+```bash
 cat <(echo "hello, process substitution")
+```
+
+```
+## hello, process substitution
 ```
 
 The chunk <(echo "hello, process sub stition") runs the echo command and pipes the output to an 
@@ -1331,7 +1855,8 @@ In the program example we saw earlier, two inputs were needed (--in1 and --in2).
 this example, assume that a program called makein is cre‐ating the input streams for --in1 and --in2. 
 We can use process substitution to create two anynyous pipes:
 
-```{bash, eval=FALSE}
+
+```bash
 program --in1 <(makein raw1.txt) --in2 <(makein raw2.txt) --out1 out1.txt --out2 out2.txt
 ```
 
@@ -1341,7 +1866,8 @@ writing it to disk. In the preceding program example, assume that we wanted to t
 that’s being written to files out1.txt and out2.txt and compress these streams to files out1.txt.gz 
 and out2.txt.gz. We can do this using the intuitive analog to <(...), >(...):
 
-```{bash, eval=FALSE}
+
+```bash
 program --in1 in1.txt --in2 in2.txt --out1 >(gzip > out1.txt.gz) --out2 >(gzip > out2.txt.gz)
 ```
 

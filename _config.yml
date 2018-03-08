@@ -2,19 +2,28 @@
 # Values for this lesson.
 #------------------------------------------------------------
 
-# Which carpentry is this ("swc", "dc", or "lc)?
+# Which carpentry is this ("swc", "dc", or "lc")?
 carpentry: "swc"
 
 # Overall title for pages.
-title: "Working with and Visualizing Data in R"
+title: "Lesson Title"
 
-# Contact email address.
-email: "mailto:dlavrov@iastate.edu"
+# Contact.  This *must* include the protocol: if it's an email
+# address, it must look like "mailto:lessons@software-carpentry.org",
+# or if it's a URL, "https://gitter.im/username/ProjectName".
+email: "mailto:lessons@software-carpentry.org"
 
 #------------------------------------------------------------
-# Constant URL addresses across lessons
+# Generic settings (should not need to change).
 #------------------------------------------------------------
-#
+
+# What kind of thing is this ("workshop" or "lesson")?
+kind: "lesson"
+
+# Magic to make URLs resolve both locally and on GitHub.
+# See https://help.github.com/articles/repository-metadata-on-github-pages/.
+repository: <USERNAME>/<PROJECT>
+
 # Sites.
 amy_site: "https://amy.software-carpentry.org/workshops"
 dc_site: "http://datacarpentry.org"
@@ -32,19 +41,9 @@ training_site: "https://swcarpentry.github.io/instructor-training"
 # Surveys.
 pre_survey: "https://www.surveymonkey.com/r/swc_pre_workshop_v1?workshop_id="
 post_survey: "https://www.surveymonkey.com/r/swc_post_workshop_v1?workshop_id="
+training_post_survey: "https://www.surveymonkey.com/r/post-instructor-training"
 
-#------------------------------------------------------------
-# Lesson Generic settings (should not need to change).
-#------------------------------------------------------------
-
-# What kind of thing is this ("workshop" or "lesson")?
-kind: "lesson"
-
-# Magic to make URLs resolve both locally and on GitHub.
-# See https://help.github.com/articles/repository-metadata-on-github-pages/.
-repository: <USERNAME>/<PROJECT>
-
-# Start time in minutes (0 to be clock-independent, 540 to show a start at 09:00 am)
+# Start time in minutes (0 to be clock-independent, 540 to show a start at 09:00 am).
 start_time: 0
 
 # Specify that things in the episodes collection should be output.
@@ -65,10 +64,6 @@ defaults:
       type: episodes
     values:
       layout: episode
-
-#------------------------------------------------------------
-# Jekyll Generic settings (should not need to change).
-#------------------------------------------------------------
 
 # Files and directories that are not to be copied.
 exclude:

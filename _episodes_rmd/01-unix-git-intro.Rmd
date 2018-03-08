@@ -36,7 +36,7 @@ knitr_fig_path("01-")
 
 
 # UNIX 
-<img src="./images/unix1.gif" align="right" hspace="10">
+<img src="/images/unix1.gif" align="right" hspace="10">
 The objective of this tutorial is to introduce you to the Unix Shell. Although UNIX's  Command-Line Interface 
 may seem archaic, it is the single most powerful tool in a bioinformaticians toolbox. Some basic understanding 
 of how to use the Command Line to move, modify and view files containing molecular and descriptive data is an 
@@ -89,7 +89,8 @@ cd -;
 pwd;
 ```
 
-> Tip: Shell Expansion
+> ## Tip: Shell Expansion
+>
 > As you start spending more time in a terminal, you'll start to collect tricks to make this process as 
 > efficient as possible. One useful trick is shell expansion. Shell expansion is when your shell expands 
 > text for you so you don’t have to type it out. As we just saw above, the shell expands the tilde character 
@@ -107,7 +108,7 @@ pwd;
 >
 {: .callout}
 
->  ## Tip: autocompletion and history
+> ## Tip: autocompletion and history
 > 
 > There are two other extremely useful features provided by most shells: autocompletion and history. 
 > 
@@ -144,7 +145,7 @@ cat tb1-protein.fasta tga1-protein.fasta > zea-proteins.fasta
 
 Note that nothing is printed to your terminal screen when you redirect standard output to a file 
 
-![](./images/fig3.1.png)
+![](/images/fig3.1.png)
 
 How can we verify that the command worked?
 
@@ -162,7 +163,7 @@ out: we just redirect to a logfile like stderr.txt. Unix-like operating systems 
 “fake” disk (known as a pseudodevice) to redirect unwanted output to: /dev/null. Output written 
 to /dev/null disappears, which is why it’s sometimes jokingly referred to as a “black‐hole”.
 
->  ## Tip: `tail -f`
+> ## Tip: `tail -f`
 > 
 > One way to write output to monitor redirected stanard output or error is to use
 > `tail -f` with the output/error filename. 
@@ -196,7 +197,7 @@ work between anything as long as both programs understand the data passed betwee
 common denominator between most programs, plain-text streams are often used.
 
 ```{bash}
-grep -v "^>" tb1.fasta | grep --color -i "[^ATCG]"
+grep -v "^>" ../data/tb1.fasta | grep --color -i "[^ATCG]"
 ```
 
 ### Combining Pipes and Redirection
@@ -298,9 +299,10 @@ will print the message if error has occurred.
 > true || echo "first command was not a success" 
 > false || echo "first command was not a success"
 > false && echo "first command was a success"
-> 
+> ```
 >
 > > ## Solution to challenge 1
+> >
 > > ```{bash}
 > > true
 > > echo $?
@@ -330,7 +332,7 @@ command. This opens up a lot of useful possibilities. For example, if you want t
 from executing a command into a text, you can type:
 
 ```{bash}
-echo "There are $(grep -c '^>' input.fasta) entries in my FASTA file."
+echo "There are $(grep -c '^>' ../data/contaminated.fastq) entries in my FASTA file."
 ```
 
 This command uses grep to count (the -c option stands for count) the number of lines matching the pattern. 
@@ -367,8 +369,12 @@ markdown syntax specification is available on his [website](https://daringfireba
 
 Here is an example of a Markdown text and its HTML rendering:
 
-<img src="./images/fig1.1.png" align="left" hspace="10">
-<img src="./images/fig1.2.png" align="right" hspace="10">
+Markdown text              |  HTML rendering
+:-------------------------:|:-------------------------:
+![](/images/fig1.1.png)    |  ![](/images/fig1.2.png)
+
+
+
 
 ## RMarkdown
 
