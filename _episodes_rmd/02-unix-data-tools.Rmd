@@ -7,16 +7,15 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Unix Data Tools
+# Bioinformatic data
+## Retrieving bioinformatic data
 
-## Introduction
-
-## Dataset
 ### Downloading Data with wget and curl
-Two common command-line programs for downloading data from the Web are `wget` and `curl`. 
-Depending on your system, these may not be already installed; you’ll have to install them 
-with a package manager (e.g., Homebrew or apt-get). While `curl` and `wget` are similar in 
-basic functionality, their relative strengths are different:  
+Two common command-line programs for downloading data from the Web are 
+[wget](https://www.gnu.org/software/wget/) and [curl](https://curl.haxx.se/). 
+If they are not installed on your system, you’ll have to install them 
+with a package manager (e.g., Homebrew or apt-get). While `curl` and `wget` 
+are similar in basic functionality, their relative strengths are different:  
 * `wget` is useful for quickly downloading a file from the command line
 * `curl` is used in scripts that send data to a system or recieve data through a variate of protocols, including SFTP and SCP.
 
@@ -26,7 +25,10 @@ To get a file with data for human chromosome 22 from the GRCh37 (also known as h
 wget http://hgdownload.soe.ucsc.edu/goldenPath/hg19/chromosomes/chr22.fa.gz
 ```
 
-Notice that the link to chromosome 22 begins with “http” (short for Hyper‐Text Transfer Protocol). wget can also handle FTP links (which start with “ftp,” short for File Transfer Protocol). In general, FTP is preferable to HTTP for large files (and is often recommended by websites like the UCSC Genome Browser). 
+Notice that the link to chromosome 22 begins with “http” (short for Hyper‐Text Transfer Protocol). 
+`wget` can also handle FTP links (which start with “ftp,” short for File Transfer Protocol). 
+In general, FTP is preferable to HTTP for large files (and is often recommended by websites like 
+the UCSC Genome Browser). 
 
 To download chromosome 22 with curl, we’d use:
 ```{bash, message=FALSE}
@@ -34,21 +36,20 @@ curl http://hgdownload.soe.ucsc.edu/goldenPath/hg19/chromosomes/chr22.fa.gz > ch
 ```
 
 ### Data Integrity
-Data we download into our project directory is the starting point of all future analyses and conclusions. 
-Although it may seem improbable, the risk of data corruption during transfers is a concern when 
-transferring large datasets. So it's important to explicitly check the transferred data’s integrity 
-with check‐sums. Checksums are very compressed summaries of data, computed in a way that even if just 
-one bit of the data is changed, the checksum will be different. Data integrity checks are also helpful 
-in keeping track of data versions. The checksums would differ if the data changed even the tiniest bit, 
-so we can use them to calculate the version of the data. Checksums also facilitate reproducibility, 
-as we can link a particular analysis and set of results to an exact version of data summarized by the 
+Data we download into our project directory is the starting point of all future 
+analyses and conclusions. So it's important to explicitly check the transferred 
+data’s integrity with check‐sums. Checksums are very compressed summaries of data, 
+computed in a way that even if just one bit of the data is changed, the checksum 
+will be different. As such data integrity checks are also helpful in keeping track
+of data versions. Checksums facilitate reproducibility, as we can link a particular 
+analysis and set of results to an exact version of data summarized by the 
 data’s checksum value.
 
-### SHA and MD5 Checksums
-The two most common checksum algorithms for ensuring data integrity are MD5 and SHA-1. 
-SHA-1 is newer and generally preferred. However, MD5 is more common; it’s likely to be 
-what you encounter if a server has precomputed checksums on a set of files. To create 
-checksums using SHA-1 we can pass arbitrary strings to the program shasum (on some systems, 
+#### SHA and MD5 Checksums
+The two most common checksum algorithms are MD5 and SHA-1. SHA-1 is newer and generally 
+preferred. However, MD5 is more common; it’s likely to be what you encounter if a server 
+has precomputed checksums on a set of files. To create checksums using SHA-1 we can pass 
+arbitrary strings to the program shasum (on some systems, 
 it’s sha1sum) through standard in:
 
 ```{bash}
@@ -65,10 +66,9 @@ We can also use checksums with file input:
 shasum chr22.fa.gz
 ```
 
-When downloading many files, it can get rather tedious to check each checksum individually. 
-The program `shasum` has a convenient solution: it can create and validate against a file 
-containing the checksums of files. We can create a SHA-1 checksum file for all FASTQ files 
-in the data/ directory as follows:
+Because it can get rather tedious to check each checksum individually `shasum` has a convenient 
+solution: it can create and validate against a file containing the checksums of files. We can 
+create a SHA-1 checksum file for all FASTQ files in the data/ directory as follows:
 
 ```{bash eval=FALSE}
 shasum data/*fastq > fastq_checksums.sha
@@ -89,7 +89,7 @@ GNU version for this option.
 When we download data from the internet, it's important to include checksum numbers in a README.md file
 for reproducibility, e.g.,
 
->    ## Genome and Annotation Data
+> ## Genome and Annotation Data
 >    Mouse (*Mus musculus*) reference genome version GRCm38 (Ensembl
 >    release 74) was downloaded on Sat Feb 22 21:24:42 PST 2014, using:
 >        wget ftp://ftp.ensembl.org/pub/release-74/fasta/mus_musculus/dna/Mus_musculus.GRCm38.74.dna.toplevel.fa.gz
@@ -105,46 +105,41 @@ acquired. As this example demonstrates, it takes very little effort to properly 
 enters your project, and thereby ensure reproducibility. The most important step in documenting your work 
 is that you’re consistent and make it a habit.
 
+# Unix data tools
 ## Inspecting and Manipulating Text Data with Unix Tools
 In this lesson, we'll learn how to use core Unix tools to manipulate and explore plain-text 
-data formats. Many formats in bioinformatics are simple tabular plain-text files delimited 
-by a character. The most common tabular plain-text file format used in bioinformatics is 
-tab-delimited. Bioinformatics evolved to favor tab-delimited formats because of the 
-convenience of working with these files using Unix tools. Tab-delimited file formats are also 
+data formats. The most common tabular plain-text file format used in bioinformatics is 
+tab-delimited. Many Unix tools assume tab-delimited file format by default. Such format is also 
 simple to parse with scripting languages like Python and Perl, and easy to load into R.
 
 > ## Tabular Plain-Text Data Formats
-> Tabular plain-text data formats are used extensively in computing. The basic format is incredibly 
-> simple: each row (also known as a record) is kept on its own line, and each column (also known as 
-> a field) is separated by some delimiter. There are three flavors you will encounter: tab-delimited, 
-> comma-separated, and variable space-delimited. Of these three formats, tab-delimited is the most 
-> commonly used in bioinformatics. File formats such as BED, GTF/GFF, SAM, tabular BLAST output, and 
-> VCF are all examples of tab-delimited files. Columns of a tab-delimited file are separated by a 
-> single tab character (which has the escape code \t). A common convention (but not a standard) is to 
-> include metadata on the first few lines of a tab-delimited file. These metadata lines begin with # 
-> to differentiate them from the tabular data records. Because tab-delimited files use a tab to delimit 
-> columns, tabs in data are not allowed. Comma-separated values (CSV) is another common format. CSV is 
-> similar to tab-delimited, except the delimiter is a comma character. Lastly, there are space-delimited 
-> formats. A few stubborn bioinformatics programs use a variable number of spaces to separate columns. 
-> In general, tab-delimited for‐ mats and CSV are better choices than space-delimited formats because 
-> it’s quite com‐ mon to encounter data containing spaces. Despite the simplicity of tabular data formats, 
-> there’s one major common headache: how lines are separated. Linux and OS X use a single linefeed character 
+> The basic tabular data format is incredibly simple: each row (also known as a record) is kept 
+> on its own line, and each column (also known as a field) is separated by some delimiter. There 
+> are three flavors you will encounter: tab-delimited, comma-separated, and variable space-delimited. 
+> Of these three formats, tab-delimited is the most commonly used in bioinformatics. File formats 
+> such as BED, GTF/GFF, SAM, tabular BLAST output, and VCF are all examples of tab-delimited files. 
+> Columns of a tab-delimited file are separated by a single tab character (which has the escape code \t). 
+> A common convention (but not a standard) is to include metadata on the first few lines of a 
+> tab-delimited file. These metadata lines begin with # to differentiate them from the tabular data 
+> records. Because tab-delimited files use a tab to delimit columns, tabs in data are not allowed. 
+> In general, tab-delimited formats and CSV are better choices than space-delimited formats because 
+> it’s quite common to encounter data containing spaces.  
+> Despite the simplicity of tabular data formats, there’s one major common 
+> headache: how lines are separated. Linux and OS X use a single linefeed character 
 > (with the escape code \n) to separate lines, while Windows uses a DOS-style line separator of a carriage 
 > return and a linefeed character (\r\n). CSV files generally use this DOS-style too, as this is specified 
 > in the CSV specification RFC-4180 (which in practice is loosely followed). Occasionally, you might encounter 
-> files separated by only carriage returns, too.
+> files separated by only carriage returns.
 {: .callout}
 
 In this lesson, we’ll work with very simple genomic feature formats: BED (three-column) and GTF files. 
 These file formats store the positions of features such as genes, exons, and variants in tab-delimited 
-format. Don’t worry too much about the specifics of these formats; we’ll cover them later. Our goal here 
-is to develop the skills to freely manipulate plain-text files or streams using Unix data tools. We’ll 
-learn each tool separately, and cumulatively work up to more advanced pipelines and programs.
+format. Don’t worry too much about the specifics of these formats; our goal here is to develop the 
+skills to freely manipulate plain-text files or streams using Unix data tools.
 
 ### Inspecting Data with `head` and `tail`
-Many files we encounter in bioinformatics are much too long to inspect with cat: running cat on a file 
-a million lines long would quickly fill your shell with text scrolling far too fast to make sense of. 
-A better option is to take a look at the top of a file with `head`. First, download the file 
+Although we can print the content of a file on screen with `cat`, a better option is to take a look
+at the top of a file with `head` and at the bottom of the file with `tail`. First, download the file 
 Mus_musculus.GRCm38.75_chr1.bed:
 
 ```{bash}
@@ -158,19 +153,17 @@ Now look at it with `head`:
 head -n 3 Mus_musculus.GRCm38.75_chr1.bed
 ```
 
-Notice the -n argument; it controls how many lines to display (the default is 10).
-`head` allows you to quickly inspect a file to see if a column header exists, how many 
-columns there are, what delimiter is being used, some sample rows, and so on.
+The -n argument controls how many lines to display (the default is 10).
 `head` has a related command designed to look at the end, or `tail` of a file:
 
 ```{bash}
 tail -n 3 Mus_musculus.GRCm38.75_chr1.bed
 ```
 
-We can also use tail to remove the header of a file. Normally the -n argument specifies how many 
-of the last lines of a file to include, but if -n is given a number x preceded with a + sign (e.g., +x), 
-tail will start from the xth line. So to chop off a header, we start from the second line with -n +2. 
-Here, we’ll use the command seq to generate a file of 3 numbers, and chop of the first line:
+One common use of `tail` is to remove the header of a file. If -n is given a number x 
+preceded with a + sign (e.g., +x), tail will start from the xth line. So to chop off a 
+header, we start from the second line with -n +2. Here, we’ll use the command seq to 
+generate a file of 3 numbers, and chop of the first line:
 
 ```{bash}
 seq 3 > nums.txt
@@ -181,13 +174,13 @@ tail -n +2 nums.txt
 
 Sometimes it’s useful to see both the beginning and end of a file. Foor example, if we have a 
 sorted BED file and we want to see the positions of the first feature and last feature. 
-We can do this using:
+We can do this using Unix subshell, the topic we'll cover later:
 
 ```{bash}
 (head -n 2; tail -n 2) < Mus_musculus.GRCm38.75_chr1.bed
 ```
 
-This is a useful trick, but it’s a bit long to type. To keep it handy, we can create a short‐cut 
+We can create even a short‐cut for this command
 in your shell configuration file, which is either ~/.bashrc or ~/.profile:
 
 ```{bash eval=FALSE}
@@ -195,34 +188,25 @@ in your shell configuration file, which is either ~/.bashrc or ~/.profile:
 i() { (head -n 2; tail -n 2) < "$1" | column -t}
 ```
 
-Then, either run source on your shell configuration file, or start a new terminal ses‐
-sion and ensure this works. Then we can use i (for inspect) as a normal command.
-
-`head` is also useful for taking a peek at data resulting from a Unix pipeline. 
-For example, suppose we want to grep the Mus_musculus.GRCm38.75_chr1.gtf file for 
-rows containing the string gene_id "ENSMUSG00000025907". We can pipe the standard out of grep 
-directly to head to to see if everything looks correct:
+`head` is also useful for taking a peek at data resulting from a Unix pipeline:
 
 ```{bash}
 grep 'gene_id "ENSMUSG00000025907"' Mus_musculus.GRCm38.75_chr1.gtf | head -n 1
 ```
 
-After printing the first few rows of your data to ensure your pipeline is working prop‐ erly, the head process exits. This is an important feature that helps ensure your pipes don’t needlessly keep processing data. When head exits, your shell catches this and stops the entire pipe, including the grep process too. Under the hood, your shell sends a signal to other programs in the pipe called SIGPIPE—much like the signal that’s sent when you press Control-c (that signal is SIGINT). When building complex pipelines that process large amounts of data, this is extremely important. It means that in a pipeline like:
-
-```{bash, eval=FALSE}
-grep "some_string" huge_file.txt | program1 | program2 | head -n 5
-```
-
-grep won’t continue searching huge_file.txt, and program1 and program2 don’t continue processing 
-input after head outputs 5 lines and exits. 
+After printing the first few rows of your data the head process exits. When it exits, 
+the shell sends a signal to other programs in the pipe called SIGPIPE, much like the 
+signal that’s sent when you press Control-c (that signal is SIGINT) that terminates them
+as well. When building complex pipelines that process large amounts of data, 
+this is extremely important feature.
 
 ### `less`
 `less` is a terminal pager, a program that allows us to view large amounts of 
 text in our terminals by scrolling through long files and standard output a 
-screen at a time. Once we start less, it will stay open until we quit it. To 
-quit it, press `q`. Some other commands are listed in the table below:
+screen at a time. Once we start less, it will stay open until we quit it by 
+pressing `q`. Some other commands in `less` are listed in the table below:
 
-![](./images/table7.1.png)
+![](../images/table7.1.png)
 
 Let’s review an example—in this chapter’s directory in the book’s GitHub repository, 
 there’s a file called contaminated.fastq. Let’s look at this with less: 
