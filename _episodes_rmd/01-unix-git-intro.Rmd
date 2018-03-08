@@ -36,7 +36,7 @@ knitr_fig_path("01-")
 
 
 # UNIX 
-<img src="../images/unix1.gif" align="right" hspace="10">
+<img src="./images/unix1.gif" align="right" hspace="10">
 The objective of this tutorial is to introduce you to the Unix Shell. Although UNIX's  Command-Line Interface 
 may seem archaic, it is the single most powerful tool in a bioinformaticians toolbox. Some basic understanding 
 of how to use the Command Line to move, modify and view files containing molecular and descriptive data is an 
