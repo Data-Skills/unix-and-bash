@@ -396,7 +396,7 @@ from executing a command into a text, you can type:
 
 
 ~~~
-echo "There are $(grep -c '^>' ../data/contaminated.fastq) entries in my FASTA file."
+echo "There are $(grep -c '^>' ../data/improper.fa) entries in my FASTA file."
 ~~~
 {: .language-r}
 
@@ -404,7 +404,7 @@ echo "There are $(grep -c '^>' ../data/contaminated.fastq) entries in my FASTA f
 
 
 ~~~
-There are 0 entries in my FASTA file.
+There are 2 entries in my FASTA file.
 ~~~
 {: .output}
 

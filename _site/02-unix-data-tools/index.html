@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="last-modified" content="2018-03-07 22:31:17 -0600">
+    <meta http-equiv="last-modified" content="2018-03-07 22:36:12 -0600">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- meta "search-domain" used for google site search function google_search() -->
     <meta name="search-domain" value="">
@@ -20,7 +20,7 @@
 	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
-    <title>Lesson Title: Unix Data Tools</title>
+    <title>Intro to UNIX: Unix Data Tools</title>
   </head>
   <body>
     <div class="container">
@@ -49,43 +49,8 @@
         <li><a href="../CONDUCT.html">Code of Conduct</a></li>
 
         
-	
-        <li><a href="../setup.html">Setup</a></li>
-
-        
-        <li class="dropdown">
-          <a href="../" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Episodes <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            
-            <li><a href="../01-introduction/index.html">Introduction</a></li>
-            
-            <li><a href="../01-unix-git-intro/index.html">Unix Basics</a></li>
-            
-            <li><a href="../02-unix-data-tools/index.html">Unix Data Tools</a></li>
-            
-	    <li role="separator" class="divider"></li>
-            <li><a href="../aio.html">All in one page (Beta)</a></li>
-          </ul>
-        </li>
-	
 
 	
-	
-        <li class="dropdown">
-          <a href="../" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Extras <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="../reference.html">Reference</a></li>
-            
-            <li><a href="../about/index.html">About</a></li>
-            
-            <li><a href="../discuss/index.html">Discussion</a></li>
-            
-            <li><a href="../figures/index.html">Figures</a></li>
-            
-            <li><a href="../guide/index.html">Instructor Notes</a></li>
-            
-          </ul>
-        </li>
 	
 
 	
@@ -114,7 +79,7 @@
   </div>
   <div class="col-xs-10">
     
-    <h3 class="maintitle"><a href="../">Lesson Title</a></h3>
+    <h3 class="maintitle"><a href="../">Intro to UNIX</a></h3>
     
   </div>
   <div class="col-xs-1">
@@ -201,8 +166,8 @@ basic functionality, their relative strengths are different:</p>
 ##                                  Dload  Upload   Total   Spent    Left  Speed
 ## 
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-  9 10.8M    9 1102k    0     0  1617k      0  0:00:06 --:--:--  0:00:06 1616k
-100 10.8M  100 10.8M    0     0  8461k      0  0:00:01  0:00:01 --:--:-- 8463k
+  8 10.8M    8  972k    0     0  1425k      0  0:00:07 --:--:--  0:00:07 1423k
+100 10.8M  100 10.8M    0     0  8439k      0  0:00:01  0:00:01 --:--:-- 8444k
 </code></pre>
 </div>
 
@@ -347,13 +312,13 @@ curl -O https://raw.githubusercontent.com/Data-Skills/bds-files/master/chapter-0
 ## 
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-100 1658k  100 1658k    0     0  2989k      0 --:--:-- --:--:-- --:--:-- 2988k
+100 1658k  100 1658k    0     0  2143k      0 --:--:-- --:--:-- --:--:-- 2143k
 ##   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
 ##                                  Dload  Upload   Total   Spent    Left  Speed
 ## 
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-  0 25.3M    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-100 25.3M  100 25.3M    0     0  19.6M      0  0:00:01  0:00:01 --:--:-- 19.6M
+  8 25.3M    8 2191k    0     0  8073k      0  0:00:03 --:--:--  0:00:03 8055k
+100 25.3M  100 25.3M    0     0  44.8M      0 --:--:-- --:--:-- --:--:-- 44.8M
 </code></pre>
 </div>
 
@@ -1902,7 +1867,7 @@ ls -l fqin
 </code></pre>
 </div>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>## prw-r--r--  1 dlavrov  staff  0 Mar  7 22:31 fqin
+<div class="highlighter-rouge"><pre class="highlight"><code>## prw-r--r--  1 dlavrov  staff  0 Mar  7 22:36 fqin
 </code></pre>
 </div>
 
@@ -2022,7 +1987,7 @@ described by Doug McIlroy).</p>
   <div class="row">
     <div class="col-md-6" align="left">
       <h4>
-	Copyright &copy; 2016–2018
+	Copyright &copy; 2016
 	
 	<a href="https://software-carpentry.org">Software Carpentry Foundation</a>
 	
@@ -2030,17 +1995,7 @@ described by Doug McIlroy).</p>
     </div>
     <div class="col-md-6" align="right">
       <h4>
-	
-	<a href="/edit/gh-pages/_episodes/02-unix-data-tools.md">Edit on GitHub</a>
-	
-	/
-	<a href="/blob/gh-pages/CONTRIBUTING.md">Contributing</a>
-	/
-	<a href="/">Source</a>
-	/
-	<a href="/blob/gh-pages/CITATION">Cite</a>
-	/
-	<a href="mailto:lessons@software-carpentry.org">Contact</a>
+	<a href="mailto:mailto:dlavrov@iastate.edu">Contact</a>
       </h4>
     </div>
   </div>
