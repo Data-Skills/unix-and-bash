@@ -32,7 +32,7 @@ keypoints:
 
 
 # UNIX 
-<img src="/images/unix1.gif" align="right" hspace="10">
+<img src="./images/unix1.gif" align="right" hspace="10">
 The objective of this tutorial is to introduce you to the Unix Shell. Although UNIX's  Command-Line Interface 
 may seem archaic, it is the single most powerful tool in a bioinformaticians toolbox. Some basic understanding 
 of how to use the Command Line to move, modify and view files containing molecular and descriptive data is an 
@@ -161,7 +161,7 @@ cat tb1-protein.fasta tga1-protein.fasta > zea-proteins.fasta
 
 Note that nothing is printed to your terminal screen when you redirect standard output to a file 
 
-![](/images/fig3.1.png)
+![](../images/fig3.1.png)
 
 How can we verify that the command worked?
 
@@ -455,7 +455,7 @@ Here is an example of a Markdown text and its HTML rendering:
 
 Markdown text              |  HTML rendering
 :-------------------------:|:-------------------------:
-![](/images/fig1.1.png)    |  ![](/images/fig1.2.png)
+![](../images/fig1.1.png)    |  ![](../images/fig1.2.png)
 
 
 

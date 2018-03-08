@@ -36,7 +36,7 @@ curl http://hgdownload.soe.ucsc.edu/goldenPath/hg19/chromosomes/chr22.fa.gz > ch
 ```
 ##   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
 ##                                  Dload  Upload   Total   Spent    Left  Speed
-##   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  7 10.8M    7  778k    0     0  1141k      0  0:00:09 --:--:--  0:00:09 1140k100 10.8M  100 10.8M    0     0  7799k      0  0:00:01  0:00:01 --:--:-- 7801k
+##   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  6 10.8M    6  722k    0     0  1051k      0  0:00:10 --:--:--  0:00:10 1051k100 10.8M  100 10.8M    0     0  8062k      0  0:00:01  0:00:01 --:--:-- 8068k
 ```
 
 ### Data Integrity
@@ -179,10 +179,10 @@ curl -O https://raw.githubusercontent.com/Data-Skills/bds-files/master/chapter-0
 ```
 ##   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
 ##                                  Dload  Upload   Total   Spent    Left  Speed
-##   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 1658k  100 1658k    0     0  5850k      0 --:--:-- --:--:-- --:--:-- 5861k
+##   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 1658k  100 1658k    0     0  1846k      0 --:--:-- --:--:-- --:--:-- 1847k
 ##   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
 ##                                  Dload  Upload   Total   Spent    Left  Speed
-##   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 25.3M  100 25.3M    0     0  43.8M      0 --:--:-- --:--:-- --:--:-- 43.9M
+##   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100 25.3M  100 25.3M    0     0  25.7M      0 --:--:-- --:--:-- --:--:-- 25.6M
 ```
 
 Now look at it with `head`:
@@ -1798,7 +1798,7 @@ ls -l fqin
 ```
 
 ```
-## prw-r--r--  1 dlavrov  staff  0 Mar  7 22:12 fqin
+## prw-r--r--  1 dlavrov  staff  0 Mar  7 22:25 fqin
 ```
 
 You’ll notice that this is indeed a special type of file: the p before the file permissions is 
