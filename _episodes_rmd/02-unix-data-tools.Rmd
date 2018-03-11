@@ -4,21 +4,20 @@ teaching: 50
 exercises: 10
 questions:
 - "How do I download and check data?"
-- "How to inspect data with `head` and `tail`?"
-- "How to view data with `less`?"
-- "How to obtain data summary information with `wc`, `ls`, and `awk`?"
+- "How to inspect data?"
+- "How to view data in Unix?"
+- "How to obtain data summary information of my data?"
 - "How do I select specific columns from my dataset?"
 - "How do I find patterns in my data?"
 - "How do I edit data streams?"
-- "What is Markdown?"
 objectives:
-- "To understand what Unix, Terminal, and Shell mean."
-- "To review the basic Unix commands, wildcards, and shell expansions."
-- "To be able to redirect streams of data in Unix."
-- "To be able to solve problems by piping several Unix commands."
-- "To be able to review, manage, and kill Unix processes."
-- "To be able to write simple Markdown files."
+- "To be able to download data in Unix."
+- "To be able to inspect and view data in Unix."
+- "To be able to select specific columns in the data files."
+- "To be able to find specific patterns in the data."
+- "To be able to edit data streams."
 keypoints:
+- "Use `wget` and `curl` to download data"
 - "Use `head` and `tail` to inspect data"
 - "Use `less` to view data and to build pipelines"
 - "Use `wc`, `ls`, and `awk` to obtain data summary"
@@ -33,7 +32,6 @@ keypoints:
 source("../bin/chunk-options.R")
 knitr_fig_path("02-")
 ```
-<img src="../images/unix2.gif" align="right" hspace="10">
 
 **Note:** The lesson is based on Chapters 6 and 7 of the 
 [Bioinformatics Data Skills](http://shop.oreilly.com/product/0636920030157.do) 
@@ -63,7 +61,7 @@ In general, FTP is preferable to HTTP for large files (and is often recommended 
 the UCSC Genome Browser). 
 
 To download chromosome 22 with curl, we’d use:
-```{bash, message=FALSE}
+```{bash, eval=FALSE}
 curl http://hgdownload.soe.ucsc.edu/goldenPath/hg19/chromosomes/chr22.fa.gz > chr22.fa.gz
 ```
 
@@ -102,13 +100,13 @@ Because it can get rather tedious to check each checksum individually `shasum` h
 solution: it can create and validate against a file containing the checksums of files. We can 
 create a SHA-1 checksum file for all FASTQ files in the data/ directory as follows:
 
-```{bash eval=FALSE}
+```{bash, eval=FALSE}
 shasum data/*fastq > fastq_checksums.sha
 ```
 
 Then, we can use shasum’s check option (-c) to validate that these files match the original versions:
 
-```{bash}
+```{bash, eval=FALSE}
 shasum -c fastq_checksums.sha
 ```
 
@@ -116,12 +114,13 @@ The program `md5sum` (or `md5` on OS X) calculates MD5 hashes and is similar in 
 However, note that on OS X, the md5 command doesn’t have the -c option, so you’ll need to install the 
 GNU version for this option.
 
-### Keeping records
-
-When we download data from the internet, it's important to include checksum numbers in a README.md file
-for reproducibility, e.g.,
-
-> ## Genome and Annotation Data
+> ## Keeping records
+>
+> When we download data from the internet, it's important to include checksum numbers in a README.md file
+> for reproducibility, e.g.,
+>
+> ### Genome and Annotation Data
+>
 >    Mouse (*Mus musculus*) reference genome version GRCm38 (Ensembl
 >    release 74) was downloaded on Sat Feb 22 21:24:42 PST 2014, using:
 >        wget ftp://ftp.ensembl.org/pub/release-74/fasta/mus_musculus/dna/Mus_musculus.GRCm38.74.dna.toplevel.fa.gz
@@ -131,14 +130,19 @@ for reproducibility, e.g.,
 >    ## SHA-1 Sums
 >     - `Mus_musculus.GRCm38.74.dna.toplevel.fa.gz`: 01c868e22a9815c[...]c2154c20ae7899c5f
 >     - `Mus_musculus.GRCm38.74.gtf.gz`: cf5bb5f8bda2803[...]708bff59cb575e379
-
-Although this isn’t a lot of documentation, this is infinitely better than not documenting how data was 
-acquired. As this example demonstrates, it takes very little effort to properly track the data that 
-enters your project, and thereby ensure reproducibility. The most important step in documenting your work 
-is that you’re consistent and make it a habit.
+>
+> Although this isn’t a lot of documentation, this is infinitely better than not documenting how data was 
+> acquired. As this example demonstrates, it takes very little effort to properly track the data that 
+> enters your project, and thereby ensure reproducibility. The most important step in documenting your work 
+> is that you’re consistent and make it a habit.
+>
+{: .callout}
 
 # Unix data tools
 ## Inspecting and Manipulating Text Data with Unix Tools
+
+<img src="../images/unix2.jpg" align="right" hspace="10">
+
 In this lesson, we'll learn how to use core Unix tools to manipulate and explore plain-text 
 data formats. The most common tabular plain-text file format used in bioinformatics is 
 tab-delimited. Many Unix tools assume tab-delimited file format by default. Such format is also 
@@ -164,17 +168,20 @@ simple to parse with scripting languages like Python and Perl, and easy to load 
 > files separated by only carriage returns.
 {: .callout}
 
-In this lesson, we’ll work with very simple genomic feature formats: BED (three-column) and GTF files. 
+In this lesson, we’ll work with very simple genomic feature formats: BED (Browser Extensible Data) 
+and GTF (Gene Transfer Format) files. 
 These file formats store the positions of features such as genes, exons, and variants in tab-delimited 
 format. Don’t worry too much about the specifics of these formats; our goal here is to develop the 
 skills to freely manipulate plain-text files or streams using Unix data tools.
 
+---
+
 ### Inspecting Data with `head` and `tail`
 Although we can print the content of a file on screen with `cat`, a better option is to take a look
 at the top of a file with `head` and at the bottom of the file with `tail`. First, download the file 
-Mus_musculus.GRCm38.75_chr1.bed:
+Mus_musculus.GRCm38.75_chr1.bed (we downloaded them already when we cloned the bds-files repository):
 
-```{bash}
+```{bash, eval=FALSE}
 curl -O https://raw.githubusercontent.com/Data-Skills/bds-files/master/chapter-07-unix-data-tools/Mus_musculus.GRCm38.75_chr1.bed
 curl -O https://raw.githubusercontent.com/Data-Skills/bds-files/master/chapter-07-unix-data-tools/Mus_musculus.GRCm38.75_chr1.gtf
 ```
@@ -232,6 +239,8 @@ signal that’s sent when you press Control-c (that signal is SIGINT) that termi
 as well. When building complex pipelines that process large amounts of data, 
 this is extremely important feature.
 
+---
+
 ### Viewing data with `less`
 `less` is a terminal pager, a program that allows us to view large amounts of 
 text in our terminals by scrolling through long files and standard output a 
@@ -276,6 +285,8 @@ can throw less after a complex pipe processing large data and not worry about wa
 computing power: the pipe will block and we can spend as much time as needed to inspect 
 the output.
 
+---
+
 ### Obtaining plain-Text Data Summary Information with `wc`, `ls`, and `awk`
 In addition to peeking at a file with `head`, `tail`, or `less`, we may want other 
 bits of summary information about a plain-text data file like the number of rows or 
@@ -283,21 +294,21 @@ columns. With plain-text data formats like tab-delimited and CSV files, the numb
 of rows is usually the number of lines. We can retrieve this with the program `wc` (for word count):
 
 ```{bash}
-wc ./data/Mus_musculus.GRCm38.75_chr1.bed
+wc ../data/Mus_musculus.GRCm38.75_chr1.bed
 ```
 
 By default, wc outputs the number of words, lines, and characters of the supplied file. Often, 
 we only care about the number of lines. We can use option -l to just return the number of lines:
 
 ```{bash}
-wc -l ./data/Mus_musculus.GRCm38.75_chr1.bed
+wc -l ../data/Mus_musculus.GRCm38.75_chr1.bed
 ```
 
 Another bit of information we usually want about a file is its size. The easiest way to do this is 
 with our old Unix friend, `ls`, with the -lh option (l for long, h for human-readable:
 
 ```{bash}
-ls -lh ./data/Mus_musculus.GRCm38.75_chr1.bed
+ls -lh ../data/Mus_musculus.GRCm38.75_chr1.bed
 ```
 
 > ## Challenge 2
@@ -311,6 +322,8 @@ ls -lh ./data/Mus_musculus.GRCm38.75_chr1.bed
 
 Note that “M” in `ls -lh` output indicates megabytes; "G" -- gigabytes.
 
+---
+
 ### Finding the number of columns with `awk`
 
 There’s one other bit of information we often want about a file: how many columns it contains. 
@@ -320,7 +333,7 @@ text data like TSV and CSV files. We’ll see more of `awk later, but let’s us
 to return how many fields a file contains:
 
 ```{bash}
-awk -F "\t" '{print NF; exit}' ./data/Mus_musculus.GRCm38.75_chr1.bed
+awk -F "\t" '{print NF; exit}' ../data/Mus_musculus.GRCm38.75_chr1.bed
 ```
 
 `awk` was designed for tabular plain-text data processing, and
@@ -336,9 +349,9 @@ that contain helpful metadata like the genome build, version, date, and accessio
 number. One way to fix this is with a tail trick we saw earlier:
 
 ```{bash}
-tail -n +6 ./data/Mus_musculus.GRCm38.75_chr1.gtf | head -n 1;
+tail -n +6 ../data/Mus_musculus.GRCm38.75_chr1.gtf | head -n 1;
 echo "---"
-tail -n +6 ./data/Mus_musculus.GRCm38.75_chr1.gtf | awk -F "\t" '{print NF; exit}'
+tail -n +6 ../data/Mus_musculus.GRCm38.75_chr1.gtf | awk -F "\t" '{print NF; exit}'
 ```
 
 A better solution would be to simply exclude all lines that match a comment line pattern. 
@@ -346,7 +359,7 @@ Using the program grep (which we’ll talk more about it later), we can easily e
 that begin with “#”:
 
 ```{bash}
-grep -v "^#" ./data/Mus_musculus.GRCm38.75_chr1.gtf | awk -F "\t" '{print NF; exit}'
+grep -v "^#" ../data/Mus_musculus.GRCm38.75_chr1.gtf | awk -F "\t" '{print NF; exit}'
 ```
 
 ---
@@ -358,7 +371,7 @@ There is another useful program for  working with plain-text tabular data format
 cut treats tabs as the delimiters, so to extract the second column we use:
 
 ```{bash}
-cut -f 2 ./data/Mus_musculus.GRCm38.75_chr1.bed | head -n 3
+cut -f 2 ../data/Mus_musculus.GRCm38.75_chr1.bed | head -n 3
 ```
 
 The -f argument is how we specify which columns to keep. The argument -f also allows 
@@ -384,7 +397,7 @@ As you may have noticed when working with tab-delimited files, it’s not always
 elements belong to a particular column. For example:
 
 ```{bash}
-grep -v "^#" ./data/Mus_musculus.GRCm38.75_chr1.gtf | cut -f1-8 | head -n 3
+grep -v "^#" ../data/Mus_musculus.GRCm38.75_chr1.gtf | cut -f1-8 | head -n 3
 ```
 
 While tabs are a terrific delimiter in plain-text data files, our variable width data leads our 
@@ -393,7 +406,7 @@ tells column to treat data as a table). `column -t` produces neat columns that a
 read:
 
 ```{bash}
-grep -v "^#" ./data/Mus_musculus.GRCm38.75_chr1.gtf | cut -f1-8 | column -t | head -n 3
+grep -v "^#" ../data/Mus_musculus.GRCm38.75_chr1.gtf | cut -f1-8 | column -t | head -n 3
 ```
 
 Note that you should only use `columnt -t` to visualize data in the terminal, not to reformat data 
@@ -422,7 +435,7 @@ the pattern (the string or basic regular expression you want to search for), and
 gene identifiers and gene names for all protein-coding genes on chromosome 1):
 
 ```{bash}
-grep "Olfr418-ps1" ./data/Mus_musculus.GRCm38.75_chr1_genes.txt
+grep "Olfr418-ps1" ../data/Mus_musculus.GRCm38.75_chr1_genes.txt
 ```
 
 Note that although the quotes around the pattern aren’t required, it’s safest to use them 
@@ -431,7 +444,7 @@ so our shells won’t try to interpret any symbols. One useful option when using
 so the matching part of the pattern is colored in your terminal.
 
 ```{bash}
-grep --color=auto "Olfr" ./data/Mus_musculus.GRCm38.75_chr1_genes.txt | head -n 5
+grep --color=auto "Olfr" ../data/Mus_musculus.GRCm38.75_chr1_genes.txt | head -n 5
 ```
 
 > ## GNU, BSD, and the Flavors of Grep
@@ -456,7 +469,8 @@ to match entire words (strings of characters surrounded by whitespace).
 
 > ## Challenge 4
 >
-> Find all the lines in Mus_musculus.GRCm38.75_chr1_genes.txt that begin with Olfr.
+> Find all the lines in Mus_musculus.GRCm38.75_chr1_genes.txt correspoding to gene names that begin 
+> with Olfr.  
 > What unix command can you use to count their number?
 >  
 {: .challenge}
@@ -473,7 +487,7 @@ quite well. For example, if we wanted to find the Ensembl gene identifiers for
 both “Olfr1413” and “Olfr1411,” we could use:
 
 ```{bash}
-grep "Olfr141[13]" ./data/Mus_musculus.GRCm38.75_chr1_genes.txt
+grep "Olfr141[13]" ../data/Mus_musculus.GRCm38.75_chr1_genes.txt
 ```
 
 However, this approach is less useful if we have more divergent patterns to search for. 
@@ -484,7 +498,7 @@ option (which on many systems is aliased to egrep). EREs allow us to use
 alternation to match either “Olfr218” or “Olfr1416.” The syntax uses a pipe symbol (|):
 
 ```{bash}
-grep -E "(Olfr1413|Olfr1411)" ./data/Mus_musculus.GRCm38.75_chr1_genes.txt
+grep -E "(Olfr1413|Olfr1411)" ../data/Mus_musculus.GRCm38.75_chr1_genes.txt
 ```
 
 We don't have time to talk about regular expressions here. The important part is that you 
@@ -494,7 +508,7 @@ We used wc -l above to count the number of matches in `grep`. However, `grep` ha
 itself: -c.  Returning to our previous example counting the genes start with “Olfr”:
 
 ```{bash}
-grep -c "\tOlfr" ./data/Mus_musculus.GRCm38.75_chr1_genes.txt
+grep -c "\tOlfr" ../data/Mus_musculus.GRCm38.75_chr1_genes.txt
 ```
 
 Counting matching lines is extremely useful—especially with plain-text data 
@@ -504,7 +518,7 @@ file. snRNAs are annotated as gene_biotype "snRNA" in the last column of this GT
 A simple way to count these features would be:
 
 ```{bash}
-grep -c 'gene_biotype "snRNA"' ./data/Mus_musculus.GRCm38.75_chr1.gtf
+grep -c 'gene_biotype "snRNA"' ../data/Mus_musculus.GRCm38.75_chr1.gtf
 ```
 
 Note here how we’ve used single quotes to specify our pattern, as our pattern includes 
@@ -514,14 +528,14 @@ By default, `grep` is outputting the entire matching line. Sometimes, however, i
 to use `grep` to extract only the matching part of the pattern. We can do this with -o:
 
 ```{bash}
-grep -o "Olfr.*" ./data/Mus_musculus.GRCm38.75_chr1_genes.txt | head -n 5
+grep -o "Olfr.*" ../data/Mus_musculus.GRCm38.75_chr1_genes.txt | head -n 5
 ```
 
 Or, suppose we wanted to extract all values of the “gene_id” field from the last column of our 
 Mus_musculus.GRCm38.75_chr1.gtf file. This is easy with -o:
 
 ```{bash}
-grep -E -o 'gene_id "\w+"' ./data/Mus_musculus.GRCm38.75_chr1.gtf | head -n 5
+grep -E -o 'gene_id "\w+"' ../data/Mus_musculus.GRCm38.75_chr1.gtf | head -n 5
 ```
 
 Here, we’re using extended regular expressions to capture all gene names in the field. However, 
@@ -530,7 +544,7 @@ there’s a great deal of redundancy in our results because our GTF file has mul
 just a list of unique, sorted gene names? We can do it easily in unix:
 
 ```{bash}
-grep -E -o 'gene_id "\w+"' ./data/Mus_musculus.GRCm38.75_chr1.gtf | cut -f2 -d" " | sed 's/"//g' | sort | uniq | head -n 10
+grep -E -o 'gene_id "\w+"' ../data/Mus_musculus.GRCm38.75_chr1.gtf | cut -f2 -d" " | sed 's/"//g' | sort | uniq | head -n 10
 ```
 
 As you can see, we are about half-way through the tools we need to learn!
@@ -548,9 +562,9 @@ sort data are as follows:
 `sort` without any arguments simply sorts a file alphanumerically by line:
 
 ```{bash}
-cat ./data/example.bed
+cat ../data/example.bed
 echo "======="
-sort ./data/example.bed
+sort ../data/example.bed
 ```
 
 Because chromosome is the first column, sorting by line effectively groups 
@@ -574,7 +588,7 @@ tabular data properly. There are two additional features we need:
 `sort` has a simple syntax to do this:
 
 ```{bash}
-sort -k1,1 -k2,2n ./data/example.bed
+sort -k1,1 -k2,2n ../data/example.bed
 ```
 
 Here, -k specifies the sorting keys and their order. Each -k argument takes a
@@ -600,17 +614,18 @@ We can check if a file is sorted according to our -k arguments using -c:
 - If we want to sort in reverse order, we use the -r option.  But notice two possibilities:
 
 ```{bash}
-sort -k1,1 -k2,2n -r ./data/example.bed
-sort -k1,1 -k2,2nr ./data/example.bed
+sort -k1,1 -k2,2n -r ../data/example.bed
+echo "==========="
+sort -k1,1 -k2,2nr ../data/example.bed
 ```
 
 Finally, GNU sort has an option -V, which is a clever alphanumeric 
 sorting routine that understands numbers inside strings. Consider the difference:
 
 ```{bash}
-gsort -k1,1 -k2,2n ./data/example2.bed
+gsort -k1,1 -k2,2n ../data/example2.bed
 echo "==========="
-gsort -k1,1V -k2,2n ./data/example2.bed
+gsort -k1,1V -k2,2n ../data/example2.bed
 ```
 
 ---
@@ -623,9 +638,9 @@ functionality, you will use `uniq` very frequently in command-line data processi
 Let’s first see an example of its behavior:
 
 ```{bash}
-cat ./data/letters.txt
+cat ../data/letters.txt
 echo "=========="
-uniq ./data/letters.txt
+uniq ../data/letters.txt
 ```
 
 Because `uniq` only removes consecutive duplicate lines (keeping one), if we want to 
@@ -633,7 +648,7 @@ find all unique lines in a file, we would first sort all lines using `sort`
 and then run `uniq`:
 
 ```{bash}
-sort ./data/letters.txt | uniq
+sort ../data/letters.txt | uniq
 ```
 
 `uniq` also has a tremendously useful option that’s used 
@@ -641,9 +656,9 @@ very often in command-line data processing: -c. This option shows the counts of 
 next to the unique lines. For example:
 
 ```{bash}
-uniq -c ./data/letters.txt
+uniq -c ../data/letters.txt
 echo "=========="
-sort ./data/letters.txt | uniq -c
+sort ../data/letters.txt | uniq -c
 ```
 
 Both `sort | uniq` and `sort | uniq -c` are frequently used shell idioms in bioinformatics 
@@ -651,7 +666,7 @@ and worth memorizing. Combined with other Unix tools like `grep` and `cut`, `sor
 can be used to summarize columns of tabular data:
 
 ```{bash}
-grep -v "^#" ./data/Mus_musculus.GRCm38.75_chr1.gtf | cut -f3 | sort | uniq -c
+grep -v "^#" ../data/Mus_musculus.GRCm38.75_chr1.gtf | cut -f3 | sort | uniq -c
 ```
 
 Because `sort` and `uniq` are line-based, we can create lines from multiple columns to count 
@@ -659,7 +674,7 @@ combinations, like how many of each feature (column 3 in this example GTF) are o
 strand (column 7):
 
 ```{bash}
-grep -v "^#" ./data/Mus_musculus.GRCm38.75_chr1.gtf | cut -f3,7 | sort | uniq -c
+grep -v "^#" ../data/Mus_musculus.GRCm38.75_chr1.gtf | cut -f3,7 | sort | uniq -c
 ```
 
 Or, if you want to see the number of features belonging to a particular gene identifier:
@@ -677,13 +692,13 @@ to output duplicated lines only. For example, the mm_gene_names.txt file (which 
 list of gene names) does not have duplicates:
 
 ```{bash}
-uniq -d mm_gene_names.txt | wc -l
+uniq -d ../data/mm_gene_names.txt | wc -l
 ```
 
 A file with duplicates, like the test.bed file, has multiple lines returned: 
 
 ```{bash}
-uniq -d test.bed | wc -l
+uniq -d ../data/test.bed | wc -l
 ```
 
 ---
@@ -694,9 +709,9 @@ we may want to add chromosome lengths recorded in example_lengths.txt to example
 we saw earlier. The files look like this:
 
 ```{bash}
-cat example.bed
+cat ../data/example.bed
 echo "=========="
-cat example_lengths.txt
+cat ../data/example_lengths.txt
 ```
 
 To do this, we need to join both of these tabular files by their common column, 
@@ -705,15 +720,15 @@ files by the column to be joined on (join would not work otherwise):
 
 
 ```{bash}
-sort -k1,1 example.bed > example_sorted.bed
-sort -c -k1,1 example_lengths.txt # verifies is already sorted
+sort -k1,1 ../data/example.bed > ../data/example_sorted.bed
+sort -c -k1,1 ../data/example_lengths.txt # verifies is already sorted
 ```
 
 The basic syntax is `join -1 <file_1_field> -2 <file_2_field> <file_1> <file_2>`. So, with 
 example.bed and example_lengths.txt this would be:
 
 ```{bash}
-join -1 1 -2 1 example_sorted.bed example_lengths.txt > example_with_lengths.txt
+join -1 1 -2 1 ../data/example_sorted.bed ../data/example_lengths.txt > ../data/example_with_lengths.txt
 cat example_with_lengths.txt
 ```
 
@@ -722,16 +737,16 @@ as we expect. Our expectation is that this join should not lead to fewer rows th
 example.bed file. We can verify this with wc -l:
 
 ```{bash}
-wc -l example_sorted.bed example_with_lengths.txt
+wc -l ../data/example_sorted.bed ../data/example_with_lengths.txt
 ```
 
 However, look what happens if our second file, example_lengths.txt doesn’t have the 
 lengths for chr3:
 
 ```{bash}
-head -n2 example_lengths.txt > example_lengths_alt.txt #truncate file
-join -1 1 -2 1 example_sorted.bed example_lengths_alt.txt
-join -1 1 -2 1 example_sorted.bed example_lengths_alt.txt | wc -l
+head -n2 ../data/example_lengths.txt > ../data/example_lengths_alt.txt #truncate file
+join -1 1 -2 1 ../data/example_sorted.bed ../data/example_lengths_alt.txt
+join -1 1 -2 1 ../data/example_sorted.bed ../data/example_lengths_alt.txt | wc -l
 ```
 
 Because chr3 is absent from example_lengths_alt.txt, our join omits rows from 
@@ -740,7 +755,7 @@ example_lengths_alt.txt. If we don’t want this behavior, we can use option -a
 to include unpairable lines—ones that do not have an entry in either file:
 
 ```{bash}
-gjoin -1 1 -2 1 -a 1 example_sorted.bed example_lengths_alt.txt # GNU join only
+gjoin -1 1 -2 1 -a 1 ../data/example_sorted.bed ../data/example_lengths_alt.txt # GNU join only
 ```
 
 Unix’s join is just one of many ways to join data, and is most useful for simple 
@@ -756,8 +771,8 @@ Often we need to make trivial edits to a stream, usually to prepare it for the n
 Unix pipeline. The stream editor, or `sed`, allows you to do exactly that.
 
 > ## GNU Sed versus BSD Sed
-> As with many other Unix tools, the BSD and GNU versions of sed differ considerably in behavior. 
-> In this section and in general, the GNU version of sed is preferred. GNU sed has some additional 
+> As with many other Unix tools, the BSD and GNU versions of `sed` differ considerably in behavior. 
+> The GNU version of `sed` is usually preferred (and is used here) as it has some additional 
 > features, and supports functionality such as escape codes for special characters like tab (\t) 
 > we expect in command-line tools.
 {: .callout}
@@ -767,9 +782,9 @@ simple example: converting a file (chroms.txt) containing a single column of chr
 format “chrom12,” “chrom2,” and so on to the format “chr12,” “chr2,” and so on:
 
 ```{bash}
-head -n 3 chroms.txt # before sed
+head -n 3 ../data/chroms.txt # before sed
 echo "=========="
-sed 's/chrom/chr/' chroms.txt | head -n 3
+sed 's/chrom/chr/' ../data/chroms.txt | head -n 3
 ```
 
 It’s a simple but important change: although chroms.txt is a mere 10 lines long, it could 
@@ -792,28 +807,37 @@ in a string containing a genomic region in the format "chr1:28427874-28425431", 
 output this as three columns:
 
 ```{bash}
-echo "chr1:28427874-28425431" | gsed -E 's/^(chr[^:]+):([0-9]+)-([0-9]+)/\1\t\2\t\3/'
+echo "chr1:28427874-28425431" | sed -E 's/^(chr[^:]+):([0-9]+)-([0-9]+)/\1\t\2\t\3/'
 ```
 
-Note that we capture chunks of text by surrounding matching pattersn with ( and ). Here are a few more ways to do the same thing:
+Note that we capture chunks of text by surrounding matching pattersn with ( and ). 
 
-```{bash}
-echo "chr1:28427874-28425431" | gsed 's/[:-]/\t/g'
-echo "chr1:28427874-28425431" | gsed 's/:/\t/' | sed 's/-/\t/' # or sed -e 's/:/\t/' -e 's/-/\t/'
-echo "chr1:28427874-28425431" | tr ':-' '\t'
-```
-
-Note, that in the last example we use `tr` to translate both delimiters to a tab character. 
-`tr` translates all occurrences of its first argument to its second (see `man tr` for more details).
+> ## Challenge 5
+>
+> Come up with some alternative solutions to problem above.
+> ```
+>
+> > ## Solution to challenge 5
+> >
+> > ```{bash}
+> > echo "chr1:28427874-28425431" | sed 's/[:-]/\t/g'
+> > echo "chr1:28427874-28425431" | sed 's/:/\t/' | sed 's/-/\t/' # or sed -e 's/:/\t/' -e 's/-/\t/
+> > echo "chr1:28427874-28425431" | tr ':-' '\t'
+> > ```
+> > Note, that in the last example we use `tr` to translate both delimiters to a tab character. 
+> > `tr` translates all occurrences of its first argument to its second (see `man tr` for more details).
+> >
+> {: .solution}
+{: .challenge}
 
 By default, `sed` prints every line, making replacements to matching lines. To print only the lines 
 that match a pattern, we use the `-n` option and than append the `p` flag after the last slash:
 
 ```{bash}
-grep -v "^#" Mus_musculus.GRCm38.75_chr1.gtf | head -n 3 | sed -E -n 's/.*transcript_id "([^"]+)".*/\1/p'
+grep -v "^#" ../data/Mus_musculus.GRCm38.75_chr1.gtf | head -n 3 | sed -E -n 's/.*transcript_id "([^"]+)".*/\1/p'
 ```
 
-Not that the example uses an important regular expression idiom: capturing text between delimiters 
+Note that the example uses an important regular expression idiom: capturing text between delimiters 
 (in this case, quotation marks): `"([^"]+)"`. In regular extension jargon, the brackets make 
 up a character class. Character classes specify what characters the expression is allowed to 
 match. Here, we use a caret (^) inside the brackets to match anything except what’s inside these 
@@ -823,15 +847,15 @@ It’s also possible to select and print certain ranges of lines with sed. In th
 not doing pattern matching, so we don’t need slashes:
 
 ```{bash}
-sed -n '1,5p' ./data/Mus_musculus.GRCm38.75_chr1.gtf
+sed -n '1,5p' ../data/Mus_musculus.GRCm38.75_chr1.gtf
 echo "============"
-sed -n '40,45p' ./data/Mus_musculus.GRCm38.75_chr1.gtf
+sed -n '40,45p' ../data/Mus_musculus.GRCm38.75_chr1.gtf
 ```
 
-Substitutions make up the majority of sed’s usage cases, but this is just scratching the surface 
-of sed’s capabilities. `sed` has features that allow you to make any type of edit to a stream of 
-text, but for complex stream processing tasks it can be easier to write a Python script than a 
-long and complicated sed command. Remember the KISS principal: Keep Incredible Sed Simple.
+Substitutions make up the majority of sed’s usage cases, but `sed` has features that allow you 
+to make any type of edit to a stream of text. However, for complex stream processing tasks it 
+can be easier to write a Python script than a long and complicated sed command. Remember the 
+KISS principal: Keep Incredible Sed Simple.
 
 ## Advanced Shell Tricks
 
@@ -875,13 +899,13 @@ standard out and sort all other lines by chromosome and start position, printing
 out after the header:
 
 ```{bash}
-(grep "^#" ./data/Mus_musculus.GRCm38.75_chr1.gtf; grep -v "^#" ./data/Mus_musculus.GRCm38.75_chr1.gtf | sort -k1,1 -k4,4n) | less | head -n 10
+(grep "^#" ../data/Mus_musculus.GRCm38.75_chr1.gtf; grep -v "^#" ../data/Mus_musculus.GRCm38.75_chr1.gtf | sort -k1,1 -k4,4n) | less | head -n 10
 ```
 
 We can redirect the output to gzip to compress this stream before writing it to disk:
 
 ```{bash eval=FALSE}
-(zgrep "^#" ./data/Mus_musculus.GRCm38.75_chr1.gtf.gz; zgrep -v "^#" ./data/Mus_musculus.GRCm38.75_chr1.gtf.gz | sort -k1,1 -k4,4n) | ` | gzip > ./data/Mus_musculus.GRCm38.75_chr1_sorted.gtf.gz
+(zgrep "^#" ../data/Mus_musculus.GRCm38.75_chr1.gtf.gz; zgrep -v "^#" ../data/Mus_musculus.GRCm38.75_chr1.gtf.gz | sort -k1,1 -k4,4n) | ` | gzip > ../data/Mus_musculus.GRCm38.75_chr1_sorted.gtf.gz
 ```
 
 ### Named Pipes and Process Substitution
@@ -956,9 +980,9 @@ will creates two anonymous named pipes, and their input is then passed to the `g
 
 ## The Unix Philosophy Revisited
 
-Throughout this chapter, the Unix philosophy—equipped with the power of the Unix pipe—allowed 
-us to rapidly stitch together tiny programs using a rich set of Unix tools. Not only are Unix 
-piped workflows fast to construct, easy to debug, and versa‐ tile, but they’re often the most 
+Throughout this chapter, we saw how to use a rich set of Unix tools to solve various tasks in
+data analysis. Not only are Unix 
+piped workflows fast to construct, easy to debug, and versatile, but they’re often the most 
 computationally efficient solution, too. It’s a testament to the incredible design of Unix that 
 so much of the way we approach modern bioinformatics is driven by the almighty Unix pipe, a 
 piece of technology invented over 40 years ago in “one feverish night” by Ken Thompson (as 
@@ -992,7 +1016,7 @@ Let’s see some examples.
 First, `awk` can mimic `cat` by omitting a pattern and printing an entire record with the variable $0:
 
 ```{bash}
-awk '{ print $0 }' ./data/example.bed #emulating cat
+awk '{ print $0 }' ../data/example.bed #emulating cat
 ```
 
 We could even omit the $0, because print called without an argument would print the current record.
@@ -1000,13 +1024,13 @@ We could even omit the $0, because print called without an argument would print 
 Second, `awk` can mimic `cut` by omitting a patter, but selecting only certain columns:
 
 ```{bash}
-awk '{ print $2 "\t" $3 }' ./data/example.bed #emulating cut
+awk '{ print $2 "\t" $3 }' ../data/example.bed #emulating cut
 ```
 
 Notice that although it was far more typing than using `cut -f2,3`, `awk` is much more flexible:
 
 ```{bash}
-awk '{ print $3 "\t" $2 }' ./data/example.bed #emulating cut
+awk '{ print $3 "\t" $2 }' ../data/example.bed #emulating cut
 ```
 
 We can incorporate simple pattern matching to select specific records, for example
@@ -1014,7 +1038,7 @@ only lines where the length of the feature (end position - start position) was g
 than 18:
 
 ```{bash}
-awk '$3 - $2 > 18 { print $2 "\t" $3 }' ./data/example.bed
+awk '$3 - $2 > 18 { print $2 "\t" $3 }' ../data/example.bed
 ```
 
 Awk supports arithmetic with the standard operators 
@@ -1084,14 +1108,14 @@ We saw how to use NR variable to calculate the mean above. We can use it also to
 ranges of lines; for example, if we wanted to extract all lines between 3 and 5 (inclusive):
 
 ```{bash}
-awk 'NR >= 3 && NR <= 5' ./data/example.bed
+awk 'NR >= 3 && NR <= 5' ../data/example.bed
 ```
 
 Awk makes it easy to convert between bioinformatics files like BED and GTF. For example, 
 we could generate a three-column BED file from Mus_musculus.GRCm38.75_chr1.gtf as follows:
 
 ```{bash}
-awk '!/^#/ { print $1 "\t" $4-1 "\t" $5 }' ./data/Mus_musculus.GRCm38.75_chr1.gtf | head -n 3
+awk '!/^#/ { print $1 "\t" $4-1 "\t" $5 }' ../data/Mus_musculus.GRCm38.75_chr1.gtf | head -n 3
 ```
 
 Note that we subtract 1 from the start position to convert to BED format. This is because BED 
@@ -1104,14 +1128,14 @@ of features (third column) belonging to the gene “Lypla1.” We could do this 
 their values in an associative array:
 
 ```{bash}
-awk '/Lypla1/ { feature[$3] += 1 }; END { for (k in feature) print k "\t" feature[k] }' ./data/Mus_musculus.GRCm38.75_chr1.gtf
+awk '/Lypla1/ { feature[$3] += 1 }; END { for (k in feature) print k "\t" feature[k] }' ../data/Mus_musculus.GRCm38.75_chr1.gtf
 ```
 
 It’s worth noting that there’s an entirely Unix way to count features of a particular gene: 
 grep, cut, sort, and uniq -c:
 
 ```{bash}
-grep "Lypla1" ./data/Mus_musculus.GRCm38.75_chr1.gtf | cut -f 3 | sort | uniq -c
+grep "Lypla1" ../data/Mus_musculus.GRCm38.75_chr1.gtf | cut -f 3 | sort | uniq -c
 ```
 
 However, if we needed to also filter on column-specific information (e.g., strand), an approach 
@@ -1138,14 +1162,14 @@ As an example of how this works, let’s read in example.bed and append a column
 the feature (end position - start position) for all protein coding genes:
 
 ```{bash}
-bioawk -c gff '$3 ~ /gene/ && $2 ~ /protein_coding/ {print $seqname,$end-$start}' ./data/Mus_musculus.GRCm38.75_chr1.gtf | head -n 4
+bioawk -c gff '$3 ~ /gene/ && $2 ~ /protein_coding/ {print $seqname,$end-$start}' ../data/Mus_musculus.GRCm38.75_chr1.gtf | head -n 4
 ```
 
 Bioawk is also quite useful for processing FASTA/FASTQ files. For example, we could use it 
 to turn a FASTQ file into a FASTA file:
 
 ```{bash}
-bioawk -c fastx '{print ">"$name"\n"$seq}' ./data/contam.fastq | head -n 4
+bioawk -c fastx '{print ">"$name"\n"$seq}' ../data/contam.fastq | head -n 4
 ```
 
 Note that Bioawk detects whether to parse input as FASTQ or FASTA when we use -c fastx.  
@@ -1153,7 +1177,7 @@ Note that Bioawk detects whether to parse input as FASTQ or FASTA when we use -c
 Bioawk can also serve as a method of counting the number of FASTQ/FASTA entries:
 
 ```{bash}
-bioawk -c fastx 'END{print NR}' ./data/contam.fastq
+bioawk -c fastx 'END{print NR}' ../data/contam.fastq
 ```
 
 Or Bioawk’s function `revcomp()` can be used to reverse complement a sequence:
@@ -1178,14 +1202,14 @@ field variables, but uses the names given in the header. Suppose we had a simple
 tab-delimited file containing variant names and genotypes for individuals (in columns):
 
 ```{bash}
-head -n 4 ./data/genotypes.txt
+head -n 4 ../data/genotypes.txt
 ```
 
 If we wanted to return all variants for which individuals ind_A and ind_B have identical genotypes
 (note that this assumes a fixed allele order like ref/alt or major/minor):
 
 ```{bash}
-bioawk -c hdr '$ind_A == $ind_B {print $id}' ./data/genotypes.txt
+bioawk -c hdr '$ind_A == $ind_B {print $id}' ../data/genotypes.txt
 ```
 
 ## 2. Decoding Plain-Text Data: hexdump
@@ -1204,7 +1228,7 @@ First, to look at a file’s encoding use the program `file`, which infers what 
 content. For example, we see that many of the example files we’ve been working with in this chapter are ASCII-encoded:
 
 ```{bash}
-file ./data/Mus_musculus.GRCm38.75_chr1*
+file ../data/Mus_musculus.GRCm38.75_chr1*
 ```
 
 Some files will have non-ASCII encoding schemes, and may contain special characters. The most common character 
@@ -1212,7 +1236,7 @@ encoding scheme is UTF-8, which is a superset of ASCII but allows for special ch
 included in the GitHub directory is a UTF-8 file, as evident from file’s output:
 
 ```{bash}
-file ./data/utf8.txt
+file ../data/utf8.txt
 ```
 
 Because UTF-8 is a superset of ASCII, if we were to delete the special characters in this file and save it, 
@@ -1223,20 +1247,20 @@ lead to unintentional special characters. For example, the improper.fa file in t
 a regular FASTA file upon first inspection:
 
 ```{bash}
-cat ./data/improper.fa
+cat ../data/improper.fa
 ```
 
 However, finding the reverse complement of these sequences using `bioawk (don’t worry about the details of this 
 program yet—we’ll cover it later) leads to strange results:
 
 ```{bash}
-bioawk -cfastx '{print revcomp($seq)}' ./data/improper.fa
+bioawk -cfastx '{print revcomp($seq)}' ../data/improper.fa
 ```
 
 What’s going on? We have a non-ASCII character in our second sequence:
 
 ```{bash}
-file ./data/improper.fa
+file ../data/improper.fa
 ```
 
 We can use `hexdump` program to identify which letter is causing this problem. 

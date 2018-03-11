@@ -137,8 +137,6 @@ pwd;
 >
 {: .callout}
 
-
-
 ## Working with Streams and Redirection
 Bioinformatics data is often text-based and large. This is why Unix’s philosophy of handling text streams 
 is useful in bioinformatics: text streams allow us to do processing on a stream of data rather than holding 
@@ -424,8 +422,8 @@ mkdir results-`date +%F`
 
 
 ~~~
-mkdir: results-2018-03-07: File exists
-mkdir: results-2018-03-07: File exists
+mkdir: results-2018-03-11: File exists
+mkdir: results-2018-03-11: File exists
 ~~~
 {: .output}
 

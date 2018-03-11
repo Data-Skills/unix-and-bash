@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="last-modified" content="2018-03-07 22:39:25 -0600">
+    <meta http-equiv="last-modified" content="2018-03-11 23:42:42 +0300">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- meta "search-domain" used for google site search function google_search() -->
     <meta name="search-domain" value="">
@@ -62,6 +62,8 @@
             <li><a href="../01-unix-git-intro/index.html">Unix Basics</a></li>
             
             <li><a href="../02-unix-data-tools/index.html">Unix Data Tools</a></li>
+            
+            <li><a href="../03-bash-scripts/index.html">Unix Data Tools</a></li>
             
 	    <li role="separator" class="divider"></li>
             <li><a href="../aio.html">All in one page (Beta)</a></li>
@@ -230,27 +232,24 @@ absolute requirement for modern biological analysis.</p>
 
 <p>Before we do anything in unix we need to know these ten essential Unix commands for navigation and file manipulation:</p>
 
-<div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="n">pwd</span><span class="p">,</span><span class="w"> </span><span class="n">ls</span><span class="p">,</span><span class="w"> </span><span class="n">cd</span><span class="p">,</span><span class="w"> </span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">mv</span><span class="p">,</span><span class="w"> </span><span class="n">mkdir</span><span class="p">,</span><span class="w"> </span><span class="n">rm</span><span class="p">,</span><span class="w"> </span><span class="n">man</span><span class="p">,</span><span class="w"> </span><span class="n">cat</span><span class="o">/</span><span class="n">zcat</span><span class="p">,</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="c1">#separated by ,
-</span></code></pre>
-</div>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pwd</span><span class="p">,</span><span class="w"> </span><span class="n">ls</span><span class="p">,</span><span class="w"> </span><span class="n">cd</span><span class="p">,</span><span class="w"> </span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">mv</span><span class="p">,</span><span class="w"> </span><span class="n">mkdir</span><span class="p">,</span><span class="w"> </span><span class="n">rm</span><span class="p">,</span><span class="w"> </span><span class="n">man</span><span class="p">,</span><span class="w"> </span><span class="n">cat</span><span class="o">/</span><span class="n">zcat</span><span class="p">,</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="c1">#separated by ,</span><span class="w">
+</span></code></pre></div></div>
 
 <p>You should also be familiar with the meaning of the following wildcards and shell expansion characters:</p>
 
-<div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">A</span><span class="o">-</span><span class="n">Z</span><span class="p">],</span><span class="w"> </span><span class="o">/</span><span class="p">,</span><span class="w"> </span><span class="n">.</span><span class="o">/</span><span class="p">,</span><span class="w"> </span><span class="n">..</span><span class="o">/</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="c1">#separated by , 
-</span></code></pre>
-</div>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">A</span><span class="o">-</span><span class="n">Z</span><span class="p">],</span><span class="w"> </span><span class="o">/</span><span class="p">,</span><span class="w"> </span><span class="n">.</span><span class="o">/</span><span class="p">,</span><span class="w"> </span><span class="n">..</span><span class="o">/</span><span class="p">,</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="c1">#separated by , </span><span class="w">
+</span></code></pre></div></div>
 
 <p>Finally, you need to know the difference between the absolute and relative path, e.g.,</p>
 
-<div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="n">cd</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="w">
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cd</span><span class="w"> </span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="w">
 </span><span class="n">cd</span><span class="w"> </span><span class="n">..</span><span class="o">/</span><span class="n">lib</span><span class="w">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <p>To make sure that we are all on the same page, predict the action of the following commands and check your 
 predictions by typing them in the terminal:</p>
 
-<div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="n">cd</span><span class="p">;</span><span class="w">
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cd</span><span class="p">;</span><span class="w">
 </span><span class="n">pwd</span><span class="p">;</span><span class="w">
 </span><span class="n">ls</span><span class="w"> </span><span class="o">-</span><span class="n">tl</span><span class="p">;</span><span class="w">
 </span><span class="n">mkdir</span><span class="w"> </span><span class="o">-</span><span class="n">p</span><span class="w"> </span><span class="n">test</span><span class="o">-</span><span class="n">dir</span><span class="o">/</span><span class="n">lab1</span><span class="p">;</span><span class="w">
@@ -261,8 +260,7 @@ predictions by typing them in the terminal:</p>
 </span><span class="n">cd</span><span class="w"> </span><span class="n">..</span><span class="p">;</span><span class="w">
 </span><span class="n">cd</span><span class="w"> </span><span class="o">-</span><span class="p">;</span><span class="w">
 </span><span class="n">pwd</span><span class="p">;</span><span class="w">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <blockquote class="callout">
   <h2 id="tip-shell-expansion">Tip: Shell Expansion</h2>
@@ -275,13 +273,11 @@ home directory. A type of shell expansion called brace expansion can be used to 
 simple directory structure with a single command. Brace expansion creates strings by expanding out 
 the comma-separated values inside the braces. This is easier to understand through a trivial example:</p>
 
-  <div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="n">echo</span><span class="w"> </span><span class="n">dog</span><span class="o">-</span><span class="p">{</span><span class="n">gone</span><span class="p">,</span><span class="n">bowl</span><span class="p">,</span><span class="n">bark</span><span class="p">}</span><span class="w">
-</span></code></pre>
-  </div>
+  <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">echo</span><span class="w"> </span><span class="n">dog</span><span class="o">-</span><span class="p">{</span><span class="n">gone</span><span class="p">,</span><span class="n">bowl</span><span class="p">,</span><span class="n">bark</span><span class="p">}</span><span class="w">
+</span></code></pre></div>  </div>
 
-  <div class="output highlighter-rouge"><pre class="highlight"><code>dog-gone dog-bowl dog-bark
-</code></pre>
-  </div>
+  <div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dog-gone dog-bowl dog-bark
+</code></pre></div>  </div>
   <p>Using the same strategy, we can create a project directory:
 <code class="highlighter-rouge">mkdir -p zmays-snps/{data/seqs,scripts,analysis}</code>
 Note that we need to use mkdir’s -p flag, which tells mkdir to create any necessary 
@@ -324,9 +320,8 @@ whereas <code class="highlighter-rouge">&gt;&gt;</code> appends to the file. If 
 redirecting output to it. For example, to concatenate two FASTA files, we use <code class="highlighter-rouge">cat</code> command, but redirect 
 the output to a file:</p>
 
-<div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="n">cat</span><span class="w"> </span><span class="n">tb1</span><span class="o">-</span><span class="n">protein.fasta</span><span class="w"> </span><span class="n">tga1</span><span class="o">-</span><span class="n">protein.fasta</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">zea</span><span class="o">-</span><span class="n">proteins.fasta</span><span class="w">
-</span></code></pre>
-</div>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cat</span><span class="w"> </span><span class="n">tb1</span><span class="o">-</span><span class="n">protein.fasta</span><span class="w"> </span><span class="n">tga1</span><span class="o">-</span><span class="n">protein.fasta</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">zea</span><span class="o">-</span><span class="n">proteins.fasta</span><span class="w">
+</span></code></pre></div></div>
 
 <p>Note that nothing is printed to your terminal screen when you redirect standard output to a file</p>
 
@@ -361,9 +356,8 @@ to /dev/null disappears, which is why it’s sometimes jokingly referred to as a
 you can read standard input from a file. Though standard input redirection is less common 
 than &gt;, », and 2&gt;, it is still occasionally useful:</p>
 
-<div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="n">program</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">inputfile</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">outputfile</span><span class="w">
-</span></code></pre>
-</div>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">program</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">inputfile</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">outputfile</span><span class="w">
+</span></code></pre></div></div>
 
 <p>Many programs we’ll see later (like <code class="highlighter-rouge">grep</code>, <code class="highlighter-rouge">awk</code>, <code class="highlighter-rouge">sort</code>) can take a file argument in addition 
 to input through standard input. Other programs (common especially in bioinformatics) use a single 
@@ -382,21 +376,18 @@ from smaller modular parts. It doesn’t matter what language a program is writt
 work between anything as long as both programs understand the data passed between them. As the lowest 
 common denominator between most programs, plain-text streams are often used.</p>
 
-<div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="n">grep</span><span class="w"> </span><span class="o">-</span><span class="n">v</span><span class="w"> </span><span class="s2">"^&gt;"</span><span class="w"> </span><span class="n">..</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">tb1.fasta</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="o">--</span><span class="n">color</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="s2">"[^ATCG]"</span><span class="w">
-</span></code></pre>
-</div>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">grep</span><span class="w"> </span><span class="o">-</span><span class="n">v</span><span class="w"> </span><span class="s2">"^&gt;"</span><span class="w"> </span><span class="n">..</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">tb1.fasta</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="o">--</span><span class="n">color</span><span class="w"> </span><span class="o">-</span><span class="n">i</span><span class="w"> </span><span class="s2">"[^ATCG]"</span><span class="w">
+</span></code></pre></div></div>
 
-<div class="output highlighter-rouge"><pre class="highlight"><code>CCCCAAAGACGGACCAATCCAGCAGCTTCTACTGCTAYCCATGCTCCCCTCCCTTCGCCGCCGCCGACGC
-</code></pre>
-</div>
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CCCCAAAGACGGACCAATCCAGCAGCTTCTACTGCTAYCCATGCTCCCCTCCCTTCGCCGCCGCCGACGC
+</code></pre></div></div>
 
 <h3 id="combining-pipes-and-redirection">Combining Pipes and Redirection</h3>
 
 <p>Obviously, we can combine pipes and redirections:</p>
 
-<div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="n">program1</span><span class="w"> </span><span class="n">input.txt</span><span class="w"> </span><span class="m">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">program1.stderr</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">program2</span><span class="w"> </span><span class="m">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">program2.stderr</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">results.txt</span><span class="w">
-</span></code></pre>
-</div>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">program1</span><span class="w"> </span><span class="n">input.txt</span><span class="w"> </span><span class="m">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">program1.stderr</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">program2</span><span class="w"> </span><span class="m">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">program2.stderr</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">results.txt</span><span class="w">
+</span></code></pre></div></div>
 
 <h3 id="even-more-redirection-a-tee-in-your-pipe">Even More Redirection: A tee in Your Pipe</h3>
 
@@ -406,9 +397,8 @@ wish to store intermediate files for steps that take a long time to complete. Th
 program <code class="highlighter-rouge">tee</code> diverts a copy of your pipeline’s standard output stream to an intermediate 
 file while still passing it through its standard output:</p>
 
-<div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="n">program1</span><span class="w"> </span><span class="n">input.txt</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">tee</span><span class="w"> </span><span class="n">intermediate</span><span class="o">-</span><span class="n">file.txt</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">program2</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">results.txt</span><span class="w">
-</span></code></pre>
-</div>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">program1</span><span class="w"> </span><span class="n">input.txt</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">tee</span><span class="w"> </span><span class="n">intermediate</span><span class="o">-</span><span class="n">file.txt</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">program2</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">results.txt</span><span class="w">
+</span></code></pre></div></div>
 
 <h2 id="managing-and-interacting-with-processes">Managing and Interacting with Processes</h2>
 <p>When we run programs through the Unix shell, they become processes until they successfully 
@@ -424,9 +414,8 @@ however long the command takes to run (we say that the program is running in the
 We can tell the Unix shell to run a program in the background by appending an ampersand (&amp;) 
 to the end of our command. For example:</p>
 
-<div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="n">program1</span><span class="w"> </span><span class="n">input.txt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">results.txt</span><span class="w"> </span><span class="o">&amp;</span><span class="w">
-</span></code></pre>
-</div>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">program1</span><span class="w"> </span><span class="n">input.txt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">results.txt</span><span class="w"> </span><span class="o">&amp;</span><span class="w">
+</span></code></pre></div></div>
 
 <p>or by stopping a program with <code class="highlighter-rouge">Control-z</code> and sending it to background with <code class="highlighter-rouge">bg</code>.</p>
 
@@ -443,11 +432,10 @@ requiring that we send a special signal to kill the process: <code class="highli
 is running in the foreground. Killing a process ends it for good, and unlike suspending it with a stop 
 signal, it’s unrecoverable. You can also kill a process with a <code class="highlighter-rouge">kill</code> command:</p>
 
-<div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="n">kill</span><span class="w"> </span><span class="m">-9</span><span class="w"> </span><span class="o">&lt;</span><span class="n">PID</span><span class="o">&gt;</span><span class="w"> </span><span class="c1"># PID is process id
-#or
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">kill</span><span class="w"> </span><span class="m">-9</span><span class="w"> </span><span class="o">&lt;</span><span class="n">PID</span><span class="o">&gt;</span><span class="w"> </span><span class="c1"># PID is process id</span><span class="w">
+</span><span class="c1">#or</span><span class="w">
 </span><span class="n">kill</span><span class="w"> </span><span class="m">-9</span><span class="w"> </span><span class="o">%&lt;num&gt; # %</span><span class="n">num</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="n">number</span><span class="w">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <h3 id="exit-status-how-to-programmatically-tell-whether-your-command-worked">Exit Status: How to Programmatically Tell Whether Your Command Worked</h3>
 <p>One concern with long-running processes is that you’re probably not going to wait around to 
@@ -459,9 +447,8 @@ prints an understandable error message, too). The exit status isn’t printed to
 will set its value to a shell variable named <code class="highlighter-rouge">$?</code>. We can use the echo command to look at this variable’s 
 value after running a command:</p>
 
-<div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="n">program1</span><span class="w"> </span><span class="n">input.txt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">results.txt</span><span class="p">;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="o">$?</span><span class="w">
-</span></code></pre>
-</div>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">program1</span><span class="w"> </span><span class="n">input.txt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">results.txt</span><span class="p">;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="o">$?</span><span class="w">
+</span></code></pre></div></div>
 
 <p>Exit statuses are useful because they allow us to programmatically chain commands together 
 in the shell. A subsequent command in a chain is run conditionally on the last command’s exit status. 
@@ -482,7 +469,7 @@ will print the message if error has occurred.</p>
 either exit success (<code class="highlighter-rouge">true</code>) or exit failure (<code class="highlighter-rouge">false</code>). Predict and check the outcome of the following 
 commands:</p>
 
-  <div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="n">true</span><span class="w">
+  <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">true</span><span class="w">
 </span><span class="n">echo</span><span class="w"> </span><span class="o">$?</span><span class="w">
 </span><span class="n">false</span><span class="w">
 </span><span class="n">echo</span><span class="w"> </span><span class="o">$?</span><span class="w">
@@ -490,13 +477,12 @@ commands:</p>
 </span><span class="n">true</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="s2">"first command was not a success"</span><span class="w"> 
 </span><span class="n">false</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="s2">"first command was not a success"</span><span class="w">
 </span><span class="n">false</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="s2">"first command was a success"</span><span class="w">
-</span></code></pre>
-  </div>
+</span></code></pre></div>  </div>
 
   <blockquote class="solution">
     <h2 id="solution-to-challenge-1">Solution to challenge 1</h2>
 
-    <div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="n">true</span><span class="w">
+    <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">true</span><span class="w">
 </span><span class="n">echo</span><span class="w"> </span><span class="o">$?</span><span class="w">
 </span><span class="n">false</span><span class="w">
 </span><span class="n">echo</span><span class="w"> </span><span class="o">$?</span><span class="w">
@@ -504,28 +490,24 @@ commands:</p>
 </span><span class="n">true</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="s2">"first command was not a success"</span><span class="w"> 
 </span><span class="n">false</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="s2">"first command was not a success"</span><span class="w">
 </span><span class="n">false</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="s2">"first command was a success"</span><span class="w">
-</span></code></pre>
-    </div>
+</span></code></pre></div>    </div>
 
-    <div class="output highlighter-rouge"><pre class="highlight"><code>0
+    <div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0
 1
 first command was a success
 first command was not a success
-</code></pre>
-    </div>
+</code></pre></div>    </div>
   </blockquote>
 </blockquote>
 
 <p>If f you don’t care about the exit status and you just wish to execute two commands sequentially, 
 you can use a single semicolon (;):</p>
 
-<div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="n">false</span><span class="p">;</span><span class="w"> </span><span class="n">true</span><span class="p">;</span><span class="w"> </span><span class="n">false</span><span class="p">;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="s2">"none of the previous mattered"</span><span class="w">
-</span></code></pre>
-</div>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">false</span><span class="p">;</span><span class="w"> </span><span class="n">true</span><span class="p">;</span><span class="w"> </span><span class="n">false</span><span class="p">;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="s2">"none of the previous mattered"</span><span class="w">
+</span></code></pre></div></div>
 
-<div class="output highlighter-rouge"><pre class="highlight"><code>none of the previous mattered
-</code></pre>
-</div>
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>none of the previous mattered
+</code></pre></div></div>
 
 <h2 id="command-substitution">Command Substitution</h2>
 <p>Unix users like to have the Unix shell do work for them—this is why shell expansions like wildcards 
@@ -534,28 +516,24 @@ substitution runs a Unix command inline and returns the output as a string that 
 command. This opens up a lot of useful possibilities. For example, if you want to include the results 
 from executing a command into a text, you can type:</p>
 
-<div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="n">echo</span><span class="w"> </span><span class="s2">"There are $(grep -c '^&gt;' ../data/improper.fa) entries in my FASTA file."</span><span class="w">
-</span></code></pre>
-</div>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">echo</span><span class="w"> </span><span class="s2">"There are $(grep -c '^&gt;' ../data/improper.fa) entries in my FASTA file."</span><span class="w">
+</span></code></pre></div></div>
 
-<div class="output highlighter-rouge"><pre class="highlight"><code>There are 2 entries in my FASTA file.
-</code></pre>
-</div>
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>There are 2 entries in my FASTA file.
+</code></pre></div></div>
 
 <p>This command uses grep to count (the -c option stands for count) the number of lines matching the pattern. 
 Using command substitution, we can calculate and return the number of FASTA entries directly into this string!</p>
 
 <p>Another example of using command substitution would be creating dated directories:</p>
 
-<div class="language-r highlighter-rouge"><pre class="highlight"><code><span class="n">mkdir</span><span class="w"> </span><span class="n">results</span><span class="o">-$</span><span class="p">(</span><span class="n">date</span><span class="w"> </span><span class="o">+%F) #or
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mkdir</span><span class="w"> </span><span class="n">results</span><span class="o">-$</span><span class="p">(</span><span class="n">date</span><span class="w"> </span><span class="o">+%F) #or
 mkdir results-`date +%</span><span class="nb">F</span><span class="err">`</span><span class="w">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
-<div class="output highlighter-rouge"><pre class="highlight"><code>mkdir: results-2018-03-07: File exists
-mkdir: results-2018-03-07: File exists
-</code></pre>
-</div>
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir: results-2018-03-11: File exists
+mkdir: results-2018-03-11: File exists
+</code></pre></div></div>
 
 <p>In general, the format returned by date +%F is a really good one for dated directories, because when 
 results are sorted by name, directories in this format also sort chronologically:</p>
