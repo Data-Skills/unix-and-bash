@@ -347,7 +347,7 @@ fi
 As discussed earlier, we quote variables (especially those from human input); 
 this is a good practice and prevents issues with special characters.
 
-### Processing Files with Bash' sing `for` Loops and Globbing
+### Processing Files with Bash Using `for` Loops and Globbing
 In bioinformatics, most of our data is split across multiple files and the same workflow 
 to each of these files. Looping over files with Bash’s for loop is the simplest way to 
 accomplish this.

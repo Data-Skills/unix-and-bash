@@ -1650,7 +1650,7 @@ ls -l fqin
 
 
 ~~~
-prw-r--r--  1 dlavrov  staff  0 Mar 13 10:00 fqin
+prw-r--r--  1 dlavrov  staff  0 Mar 13 15:05 fqin
 ~~~
 {: .output}
 
