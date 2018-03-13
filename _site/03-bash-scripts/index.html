@@ -1,0 +1,1004 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="last-modified" content="2018-03-13 10:00:58 +0300">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- meta "search-domain" used for google site search function google_search() -->
+    <meta name="search-domain" value="">
+    <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/css/lesson.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/css/syntax.css" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon-swc.ico" />
+    
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+    <title>Intro to UNIX: Shell Scripting, Writing Pipelines, and Parallelizing Tasks</title>
+  </head>
+  <body>
+    <div class="container">
+      
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+      
+      
+
+      
+      <a class="navbar-brand" href="../index.html">Home</a>
+
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+
+	
+        <li><a href="../CONDUCT.html">Code of Conduct</a></li>
+
+        
+	
+        <li><a href="../setup.html">Setup</a></li>
+
+        
+        <li class="dropdown">
+          <a href="../" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Episodes <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            
+            <li><a href="../01-unix-git-intro/index.html">Unix Basics</a></li>
+            
+            <li><a href="../02-unix-data-tools/index.html">Unix Data Tools</a></li>
+            
+            <li><a href="../03-bash-scripts/index.html">Shell Scripting, Writing Pipelines, and Parallelizing Tasks</a></li>
+            
+	    <li role="separator" class="divider"></li>
+            <li><a href="../aio.html">All in one page (Beta)</a></li>
+          </ul>
+        </li>
+	
+
+	
+	
+        <li class="dropdown">
+          <a href="../" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Extras <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="../reference.html">Reference</a></li>
+            
+            <li><a href="../about/index.html">About</a></li>
+            
+            <li><a href="../discuss/index.html">Discussion</a></li>
+            
+            <li><a href="../figures/index.html">Figures</a></li>
+            
+            <li><a href="../guide/index.html">Instructor Notes</a></li>
+            
+          </ul>
+        </li>
+	
+
+	
+        <li><a href="../LICENSE.html">License</a></li>
+	
+	<li><a href="/edit/gh-pages/_episodes/03-bash-scripts.md">Improve this page <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a></li>
+	
+      </ul>
+      <form class="navbar-form navbar-right" role="search" id="search" onsubmit="google_search(); return false;">
+        <div class="form-group">
+          <input type="text" id="google-search" placeholder="Search..." aria-label="Google site search">
+        </div>
+      </form>
+    </div>
+  </div>
+</nav>
+
+
+<div class="row">
+  <div class="col-xs-1">
+    <h3 class="text-left">
+      
+      <a href="../02-unix-data-tools/index.html"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span><span class="sr-only">previous episode</span></a>
+      
+    </h3>
+  </div>
+  <div class="col-xs-10">
+    
+    <h3 class="maintitle"><a href="../">Intro to UNIX</a></h3>
+    
+  </div>
+  <div class="col-xs-1">
+    <h3 class="text-right">
+      
+      <a href="../"><span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span><span class="sr-only">lesson home</span></a>
+      
+    </h3>
+  </div>
+</div>
+
+<article>
+<div class="row">
+  <div class="col-md-1">
+  </div>
+  <div class="col-md-10">
+    <h1 class="maintitle">Shell Scripting, Writing Pipelines, and Parallelizing Tasks</h1>
+  </div>
+  <div class="col-md-1">
+  </div>
+</div>
+
+
+<blockquote class="objectives">
+  <h2>Overview</h2>
+
+  <div class="row">
+    <div class="col-md-3">
+      <strong>Teaching:</strong> 100 min
+      <br/>
+      <strong>Exercises:</strong> 20 min
+    </div>
+    <div class="col-md-9">
+      <strong>Questions</strong>
+      <ul>
+	
+	<li><p>How wto write Bash scripts?</p>
+</li>
+	
+      </ul>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+    </div>
+    <div class="col-md-9">
+      <strong>Objectives</strong>
+      <ul>
+	
+	<li><p>To be able to write simple scripts.</p>
+</li>
+	
+      </ul>
+    </div>
+  </div>
+
+</blockquote>
+
+<p><strong>Note:</strong> The lesson is based on Chapter 12 of the 
+<a href="http://shop.oreilly.com/product/0636920030157.do">Bioinformatics Data Skills</a> 
+by <a href="https://github.com/vsbuffalo">Vince Buffalo</a></p>
+
+<h1 id="bioinformatics-shell-scripting-writing-pipelines-and-parallelizing-tasks">Bioinformatics Shell Scripting, Writing Pipelines, and Parallelizing Tasks</h1>
+
+<p>In this lesson, we’ll learn the essential tools and skills to construct robust and 
+reproducible pipelines. We’ll see how to write rerunnable Bash shell scripts, 
+automate file-processing tasks with <code class="highlighter-rouge">find</code> and <code class="highlighter-rouge">xargs</code>, run pipelines in parallel, 
+and see a simple makefile.</p>
+
+<h2 id="basic-bash-scripting">Basic Bash Scripting</h2>
+<p>Bash, the shell we’ve used for this workshop, is also a full-fledged scripting language. 
+Bash is explicitly designed to make running and interfacing 
+command-line programs as simple as possible (a good characteristic of a shell!). It’s 
+important to note that Python may be a more suitable language for commonly reused or 
+advanced pipelines. Python is a more modern, more fully featured scripting language than Bash. 
+Compared to Python, Bash lacks several nice features useful for data-processing scripts. 
+However, Bash is often the best and quickest “duct tape” solution (which we often need 
+in bioinformatics).</p>
+
+<h3 id="writing-and-running-robust-bash-scripts">Writing and Running Robust Bash Scripts</h3>
+<p>Most Bash scripts in bioinformatics are simply commands organized into a re-runnable 
+script with some added bells and whistles to check that files exist and ensuring any 
+error causes the script to abort. These types of Bash scripts are quite simple to write: 
+you’ve already learned important shell features like pipes, redirects, and background 
+processes that play an important role in Bash scripts.</p>
+
+<h4 id="a-robust-bash-header">A robust Bash header</h4>
+<p>Anytime you write a Bash script, you should use the following Bash script header, 
+which sets some Bash options that lead to more robust scripts:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/bin/bash</span><span class="w">
+    </span><span class="n">set</span><span class="w"> </span><span class="o">-</span><span class="n">e</span><span class="w">
+    </span><span class="n">set</span><span class="w"> </span><span class="o">-</span><span class="n">u</span><span class="w">
+    </span><span class="n">set</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">pipefail</span><span class="w">
+</span></code></pre></div></div>
+
+<ul>
+  <li>
+    <p>The first line is called the shebang, and indicates the path to the interpreter 
+used to execute this script. Although shebang line is only required when running 
+the script as a program, it’s best to include it.</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">set -e</code> tells the script to terminate if any command exited with a nonzero exit 
+status. Note, however, that set -e has complex rules to accommodate cases when a 
+nonzero exit status indicates “false” rather than failure.</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">set -u</code> tells Bash scripts not to run any command containing a reference to an 
+unset variable name (check <code class="highlighter-rouge">echo "rm $NOTSET/*.*"</code>.</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">set -o pipefail</code> is needed to cover one of the exceptions of <code class="highlighter-rouge">set -e</code>: if the last 
+program terminates with a nonzero status, the pipe will not be terminated.</p>
+  </li>
+</ul>
+
+<p>These three options are the first layer of protection against Bash scripts with silent 
+errors and unsafe behavior.</p>
+
+<h4 id="running-bash-scripts">Running Bash scripts</h4>
+<p>Running Bash scripts can be done one of two ways: with the bash program directly (e.g., 
+bash script.sh), or calling your script as a program (./script.sh). While we can run any 
+script (as long as it has read permissions) with <code class="highlighter-rouge">bash script.sh</code>, calling the script as 
+an executable requires that it have executable permissions. We can set these using:
+<code class="highlighter-rouge">chmod u+x script.sh</code>. This adds executable permissions (+x) for the user who owns the 
+file (u).</p>
+
+<p>Unlike other programming languages, Bash’s variables don’t have data types. It’s helpful 
+to think of Bash’s variables as strings (but that may behave differently depending on context). 
+We can create a variable and assign it a value with (note that spaces matter when setting 
+Bash variables: do not use spaces around the equals sign!):</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">results_dir</span><span class="o">=</span><span class="s2">"results/"</span><span class="w">
+</span></code></pre></div></div>
+
+<p>To access a variable’s value, we use a dollar sign in front of the variable’s name (e.g., 
+$results_dir). You can experiment with this in a Bash script, or directly on the command line:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">results_dir</span><span class="o">=</span><span class="s2">"results/"</span><span class="w">
+</span><span class="n">echo</span><span class="w"> </span><span class="o">$</span><span class="n">results_dir</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>results/
+</code></pre></div></div>
+
+<p>Even though accessing a variable’s value using the dollar sign syntax works, in some cases 
+it’s not clear where a variable name ends and where an adjacent 
+string begins. To fix this, wrap the variable name in braces:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sample</span><span class="o">=</span><span class="s2">"CNTRL01A"</span><span class="w">
+</span><span class="n">mkdir</span><span class="w"> </span><span class="o">$</span><span class="p">{</span><span class="n">sample</span><span class="p">}</span><span class="err">_</span><span class="n">aln</span><span class="o">/</span><span class="w">
+</span></code></pre></div></div>
+
+<p>In addition, quoting variables makes your code more robust by preventing commands from 
+interpreting any spaces or other special characters that the variable may contain:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sample</span><span class="o">=</span><span class="s2">"CNTRL01A"</span><span class="w">
+</span><span class="n">mkdir</span><span class="w"> </span><span class="s2">"${sample}_aln/"</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="variables-and-command-line-arguments">Variables and Command-line arguments</h3>
+<p>Let’s now look at how Bash handles command-line arguments (which are assigned to the value 
+$1, $2, $3, etc.). The variable $0 stores the name of the script. We can see this ourselves 
+with a simple example script:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">echo</span><span class="w"> </span><span class="s1">'
+#!/bin/bash 
+echo "script name: $0"
+echo "first arg: $1"
+echo "second arg: $2"
+echo "third arg: $3" '</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">args.sh</span><span class="w">
+</span><span class="n">bash</span><span class="w"> </span><span class="n">args.sh</span><span class="w"> </span><span class="n">arg1</span><span class="w"> </span><span class="n">arg2</span><span class="w"> </span><span class="n">arg3</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>script name: args.sh
+first arg: arg1
+second arg: arg2
+third arg: arg3
+</code></pre></div></div>
+
+<p>Bash assigns the number of command-line arguments to the variable $# (this does not count 
+the script name, $0, as an argument). This is useful for user-friendly messages (this uses 
+a Bash if conditional, which we’ll cover in more depth in the next section):</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">echo</span><span class="w"> </span><span class="s1">'
+#!/bin/bash 
+if [ "$#" -lt 3 ] # are there less than 3 arguments? 
+then
+    echo "error: too few arguments, you provided $#, 3 required"
+    echo "usage: script.sh arg1 arg2 arg3"
+    exit 1
+fi
+echo "script name: $0"
+echo "first arg: $1"
+echo "second arg: $2"
+echo "third arg: $3" '</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">args.sh</span><span class="w">
+</span><span class="n">bash</span><span class="w"> </span><span class="n">args.sh</span><span class="w"> </span><span class="n">arg1</span><span class="w"> </span><span class="n">arg2</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>error: too few arguments, you provided 2, 3 required
+usage: script.sh arg1 arg2 arg3
+</code></pre></div></div>
+
+<p>Note, that variables created in your Bash script will only be available for 
+the duration of the Bash process running that script. For example, running a 
+script that creates a variable with some_var=3 will not create some_var in your 
+current shell, as the script runs in an entirely separate shell process.</p>
+
+<h3 id="conditionals-in-a-bash-script-if-statements">Conditionals in a Bash Script: if Statements</h3>
+<p>Like other scripting languages, Bash supports the standard if conditional statement. 
+What makes Bash a bit unique is that a command’s exit status provides the true and 
+false (remember: contrary to other languages, 0 represents true/success and anything 
+else is false/failure). The basic syntax is:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="w"> </span><span class="p">[</span><span class="n">commands</span><span class="p">]</span><span class="w"> </span><span class="n">then</span><span class="w">
+    </span><span class="p">[</span><span class="k">if</span><span class="o">-</span><span class="n">statements</span><span class="p">]</span><span class="w"> 
+</span><span class="k">else</span><span class="w">
+    </span><span class="p">[</span><span class="k">else</span><span class="o">-</span><span class="n">statements</span><span class="p">]</span><span class="w"> 
+</span><span class="n">fi</span><span class="w">
+</span></code></pre></div></div>
+
+<p>were [commands] is a placeholder for any command, set of commands, pipeline, or test condition
+[if-statements] is a placeholder for all statements executed if [commands] evaluates to true (0).
+[else-statements] is a placeholder for all statements executed if [commands] evaluates to false (1). 
+The else block is optional.</p>
+
+<p>This is an advantage Bash has over Python when writing pipelines: Bash allows your scripts to 
+directly work with command-line programs without requiring any overhead to call programs.</p>
+
+<p>For example, suppose we wanted to run a set of commands only if a file contains a certain 
+string. Because grep returns 0 only if it matches a pattern in a file and 1 otherwise, 
+we could use:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">echo</span><span class="w"> </span><span class="n">`#!/bin/bash
+if grep "pattern" some_file.txt &gt; /dev/null 
+    then
+    # commands to run if "pattern" is found
+    echo "found 'pattern' in 'some_file.txt" 
+fi`</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The set of commands in an if condition can use all features of Unix we’ve mastered so far. 
+For example, chaining commands with logical operators like &amp;&amp; (logical AND) and || (logical OR):</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/bin/bash</span><span class="w">
+</span><span class="k">if</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="s2">"pattern"</span><span class="w"> </span><span class="n">file_1.txt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="s2">"pattern"</span><span class="w"> </span><span class="n">file_2.txt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span><span class="w">
+  </span><span class="n">then</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="s2">"found 'pattern' in 'file_1.txt' and in 'file_2.txt'"</span><span class="w"> 
+</span><span class="n">fi</span><span class="w">
+</span><span class="c1"># We can also negate our program’s exit status with !: </span><span class="w">
+</span><span class="c1"># if ! grep "pattern" some_file.txt &gt; /dev/null </span><span class="w">
+  </span><span class="c1"># then echo "did not find 'pattern' in 'some_file.txt" </span><span class="w">
+</span><span class="c1"># fi</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Finally, it’s possible to use pipelines in if condition statements. Note, however, that the 
+behavior depends on <code class="highlighter-rouge">set -o pipefail</code>. If pipefail is set, any nonzero exit status in a pipe in your 
+condition statement will cause skipping the if-statements section 
+(and going on to the else block if it exists).</p>
+
+<h4 id="test-command"><code class="highlighter-rouge">test</code> command.</h4>
+<p>The final component necessary to understand Bash’s if statements is the <code class="highlighter-rouge">test</code> command. 
+Like other programs, <code class="highlighter-rouge">test</code> exits with either 0 or 1. However test’s exit status indicates 
+the return value of the test specified through its arguments, rather than exit success or error. 
+test supports numerous standard comparison operators (whether two strings are equal, whether two 
+integers are equal, whether one integer is greater than or equal to another, etc.), which is 
+needed because ash can’t rely on familiar syntax such as &gt; for “greater than,” as this is used 
+for redirection: instead, test has its own syntax (see Table 12-1 for a full list). You can get 
+a sense of how test works by playing with it directly on the command line (using ; echo “$?” 
+to print the exit status):</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">test</span><span class="w"> </span><span class="s2">"ATG"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ATG"</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="s2">"$?"</span><span class="w">
+</span><span class="n">test</span><span class="w"> </span><span class="s2">"ATG"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"atg"</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="s2">"$?"</span><span class="w"> 
+</span><span class="n">test</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="o">-</span><span class="n">lt</span><span class="w"> </span><span class="m">1</span><span class="p">;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="s2">"$?"</span><span class="w">
+</span><span class="n">test</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="o">-</span><span class="n">le</span><span class="w"> </span><span class="m">3</span><span class="p">;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="s2">"$?"</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0
+1
+1
+0
+</code></pre></div></div>
+
+<p>In practice, the most common tests are for whether files or directories exist 
+and whether you can write to them. test supports numerous file- and directory-
+related test operations (the few that are most useful in bioinformatics are in 
+Table 12-2). For examples:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">test</span><span class="w"> </span><span class="o">-</span><span class="n">d</span><span class="w"> </span><span class="n">some_directory</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="o">$?</span><span class="w"> </span><span class="c1"># is this a directory? </span><span class="w">
+</span><span class="n">test</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="n">some_file.txt</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="o">$?</span><span class="w"> </span><span class="c1"># is this a file?</span><span class="w">
+</span><span class="n">test</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="n">some_file.txt</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="o">$?</span><span class="w"> </span><span class="o">$</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">readable</span><span class="o">?</span><span class="w">
+</span></code></pre></div></div>
+
+<p>$</p>
+
+<p><img src="../images/table12-2.png" alt="" /></p>
+
+<p><code class="highlighter-rouge">test</code> is usually combined with <code class="highlighter-rouge">if</code> statements is simple:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="n">some_file.txt</span><span class="w"> 
+  </span><span class="n">then</span><span class="w"> </span><span class="p">[</span><span class="n">...</span><span class="p">]</span><span class="w"> 
+</span><span class="n">fi</span><span class="w">
+</span></code></pre></div></div>
+
+<p>However, Bash provides a simpler syntactic alternative to the test statements: 
+[ -f some_file.txt ] . Note that spaces around and within the brackets are required. 
+This makes for much simpler if statements involving comparisons:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="n">some_file.txt</span><span class="w"> </span><span class="p">]</span><span class="w"> 
+  </span><span class="n">then</span><span class="w"> </span><span class="p">[</span><span class="n">...</span><span class="p">]</span><span class="w"> 
+</span><span class="n">fi</span><span class="w">
+</span></code></pre></div></div>
+
+<p>When using this syntax, we can chain test expressions with -a as logical AND,
+-o as logical OR, ! as negation, and parentheses to group statements. Our 
+familiar &amp;&amp; and || operators won’t work in test, because these are shell operators. 
+As an example, suppose we want to ensure our script has enough arguments and that the 
+input file is readable:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/bin/bash</span><span class="w">
+</span><span class="n">set</span><span class="w"> </span><span class="o">-</span><span class="n">e</span><span class="w">
+</span><span class="n">set</span><span class="w"> </span><span class="o">-</span><span class="n">u</span><span class="w">
+</span><span class="n">set</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">pipefail</span><span class="w">
+
+</span><span class="k">if</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"$#"</span><span class="w"> </span><span class="o">-</span><span class="n">ne</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="o">!</span><span class="w"> </span><span class="o">-</span><span class="n">r</span><span class="w"> </span><span class="s2">"$1"</span><span class="w"> </span><span class="p">]</span><span class="w">
+  </span><span class="n">then</span><span class="w"> </span><span class="n">echo</span><span class="w"> </span><span class="s2">"usage: script.sh file_in.txt"</span><span class="w">
+  </span><span class="n">exit</span><span class="w"> </span><span class="m">1</span><span class="w"> 
+</span><span class="n">fi</span><span class="w">
+</span></code></pre></div></div>
+
+<p>As discussed earlier, we quote variables (especially those from human input); 
+this is a good practice and prevents issues with special characters.</p>
+
+<h3 id="processing-files-with-bash-sing-for-loops-and-globbing">Processing Files with Bash’ sing <code class="highlighter-rouge">for</code> Loops and Globbing</h3>
+<p>In bioinformatics, most of our data is split across multiple files and the same workflow 
+to each of these files. Looping over files with Bash’s for loop is the simplest way to 
+accomplish this.</p>
+
+<p>There are three essential parts to creating a pipeline to process a set of files:</p>
+<ul>
+  <li>Selecting which files to apply the commands to</li>
+  <li>Looping over the data and applying the commands</li>
+  <li>Keeping track of the names of any output files created</li>
+</ul>
+
+<p>There are two common ways to select which files to apply a bioinformatics workflow to: 
+approaches that start with a text file containing information about samples and approaches 
+that select files in directories using some criteria.</p>
+
+<p>In the first approach, you may have a file called samples.txt that tells you basic information 
+about your raw data: sample name, read pair, and where the file is. Here’s an example 
+(which is also in book’s chapter 12 directory on GitHub):</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cat</span><span class="w"> </span><span class="n">.</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">samples.txt</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat: ./data/samples.txt: No such file or directory
+</code></pre></div></div>
+
+<p>The first two columns are called metadata (data about data), which is vital to relating 
+sample information to their physical files. Note that the metadata is also in the filename 
+itself, which is useful because it allows us to extract it from the filename if we need to.
+We have to loop over these data, and do so in a way that keeps the samples straight. 
+Suppose that we want to loop over every file, gather quality statistics on each and every file 
+(using the imaginary program fastq_stat), and save this information to an output file. Each 
+output file should have a name based on the input file.</p>
+
+<p>First, we load our filenames into a Bash array, which we can then loop over. 
+Bash arrays can be created manually specific elements can be extracted using:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sample_names</span><span class="o">=</span><span class="p">(</span><span class="n">zmaysA</span><span class="w"> </span><span class="n">zmaysB</span><span class="w"> </span><span class="n">zmaysC</span><span class="p">)</span><span class="w">
+</span><span class="n">echo</span><span class="w"> </span><span class="o">$</span><span class="p">{</span><span class="n">sample_names</span><span class="p">[</span><span class="m">0</span><span class="p">]}</span><span class="w">
+</span><span class="n">echo</span><span class="w"> </span><span class="o">$</span><span class="p">{</span><span class="n">sample_names</span><span class="p">[</span><span class="m">2</span><span class="p">]}</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zmaysA
+zmaysC
+</code></pre></div></div>
+
+<p>All elements can be extracted with the cryptic-looking <code class="highlighter-rouge">echo ${sample_files[@]}</code> and the number of
+elements can be printed with <code class="highlighter-rouge">echo ${#sample_names[@]}</code>.</p>
+
+<p>But creating Bash arrays by hand is tedious and error prone, especially because we already 
+have our filenames in our sample.txt file. The beauty of Bash is that we can use a command 
+substitution to construct Bash arrays (though this can be dangerous; see the following warning). 
+Because we want to loop over each file, we need to extract the third column using cut -f 3 from 
+samples.txt. Demonstrating this in the shell:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sample_files</span><span class="o">=</span><span class="p">(</span><span class="o">$</span><span class="p">(</span><span class="n">cut</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="n">.</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">samples.txt</span><span class="p">))</span><span class="w">
+</span><span class="n">echo</span><span class="w"> </span><span class="o">$</span><span class="p">{</span><span class="n">sample_files</span><span class="p">[</span><span class="o">@</span><span class="p">]}</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cut: ./data/samples.txt: No such file or directory
+</code></pre></div></div>
+
+<p>NOTE: this approach only works if our filenames only contain alphanumeric characters, 
+(_), and (-)! If spaces, tabs, newlines, or special characters like * end up in filenames, 
+it will break this approach. With our filenames in a Bash array, we’re almost ready to 
+loop over them. The last component is to strip the path and extension from each filename, 
+leaving us with the most basic filename we can use to create an output filename. The Unix 
+program <code class="highlighter-rouge">basename</code> strips paths from filenames:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">basename</span><span class="w"> </span><span class="n">seqs</span><span class="o">/</span><span class="n">zmaysA_R1.fastq</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zmaysA_R1.fastq
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">basename</code> can also strip a suffix (e.g., extension) provided as the second argument 
+from a filename (or alternatively using the argument -s):</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">basename</span><span class="w"> </span><span class="o">-</span><span class="n">s</span><span class="w"> </span><span class="n">.fastq</span><span class="w"> </span><span class="n">seqs</span><span class="o">/</span><span class="n">zmaysA_R1.fastq</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zmaysA_R1
+</code></pre></div></div>
+
+<p>Now, all the pieces are ready to construct our processing script:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/bin/bash</span><span class="w">
+
+</span><span class="n">set</span><span class="w"> </span><span class="o">-</span><span class="n">e</span><span class="w">
+</span><span class="n">set</span><span class="w"> </span><span class="o">-</span><span class="n">u</span><span class="w">
+</span><span class="n">set</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">pipefail</span><span class="w">
+
+</span><span class="c1"># specify the input samples file, where the third column is the path to each sample FASTQ file</span><span class="w">
+</span><span class="n">sample_info</span><span class="o">=</span><span class="n">samples.txt</span><span class="w">
+
+</span><span class="c1"># create a Bash array from the third column of $sample_info</span><span class="w">
+</span><span class="n">sample_files</span><span class="o">=</span><span class="p">(</span><span class="o">$</span><span class="p">(</span><span class="n">cut</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="s2">"$sample_info"</span><span class="p">))</span><span class="w">
+
+</span><span class="k">for</span><span class="w"> </span><span class="n">fastq_file</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">$</span><span class="p">{</span><span class="n">sample_files</span><span class="p">[</span><span class="o">@</span><span class="p">]}</span><span class="w"> 
+</span><span class="n">do</span><span class="w">
+    </span><span class="c1"># strip .fastq from each file, and add suffix "-stats.txt" to create an output filename</span><span class="w">
+    </span><span class="n">results_file</span><span class="o">=</span><span class="s2">"$(basename $fastq_file .fastq)-stats.txt"</span><span class="w">
+    
+    </span><span class="c1"># run fastq_stat on a file, writing results to the filename we've # above</span><span class="w">
+    </span><span class="n">fastq_stat</span><span class="w"> </span><span class="o">$</span><span class="n">fastq_file</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">stats</span><span class="o">/$</span><span class="n">results_file</span><span class="w">
+</span><span class="n">done</span><span class="w">
+</span></code></pre></div></div>
+
+<p>That’s all there is to it. A more refined script might add a few extra features, 
+such as using an if statement to provide a friendly error if a FASTQ file does 
+not exist or a call to echo to report which sample is currently being processed.</p>
+
+<p>This script was easy to write because our processing steps took a single file as 
+input, and created a single file as output. However, many bioinformatics pipelines 
+combine two or more input files into a single output file. Aligning paired-end 
+reads is a prime example: most aligners take two input FASTQ files and return one 
+output alignment file. Suppose that we use the aligner BWA and our genome reference 
+is named zmays_AGPv3.20.fa:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/bin/bash</span><span class="w">
+    </span><span class="n">set</span><span class="w"> </span><span class="o">-</span><span class="n">e</span><span class="w">
+    </span><span class="n">set</span><span class="w"> </span><span class="o">-</span><span class="n">u</span><span class="w">
+    </span><span class="n">set</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">pipefail</span><span class="w">
+
+</span><span class="c1"># specify the input samples file, where the third column is the path to each sample FASTQ file</span><span class="w">
+</span><span class="n">sample_info</span><span class="o">=</span><span class="n">samples.txt</span><span class="w">
+
+</span><span class="c1"># our reference</span><span class="w">
+</span><span class="n">reference</span><span class="o">=</span><span class="n">zmays_AGPv3.20.fa</span><span class="w">
+
+</span><span class="c1"># create a Bash array from the first column, which are </span><span class="w">
+</span><span class="c1"># sample names. Because there are duplicate sample names </span><span class="w">
+</span><span class="c1"># (one for each read pair), we call uniq </span><span class="w">
+
+</span><span class="n">sample_names</span><span class="o">=</span><span class="p">(</span><span class="o">$</span><span class="p">(</span><span class="n">cut</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="s2">"$sample_info"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">uniq</span><span class="p">))</span><span class="w">
+
+</span><span class="k">for</span><span class="w"> </span><span class="n">sample</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">$</span><span class="p">{</span><span class="n">sample_names</span><span class="p">[</span><span class="o">@</span><span class="p">]}</span><span class="w"> </span><span class="n">do</span><span class="w">
+        </span><span class="c1"># create an output file from the sample name</span><span class="w">
+</span><span class="n">results_file</span><span class="o">=</span><span class="s2">"${sample}.sam"</span><span class="w">
+
+</span><span class="n">bwa</span><span class="w"> </span><span class="n">mem</span><span class="w"> </span><span class="o">$</span><span class="n">reference</span><span class="w"> </span><span class="o">$</span><span class="p">{</span><span class="n">sample</span><span class="p">}</span><span class="err">_</span><span class="n">R</span><span class="m">1</span><span class="n">.fastq</span><span class="w"> </span><span class="o">$</span><span class="p">{</span><span class="n">sample</span><span class="p">}</span><span class="err">_</span><span class="n">R</span><span class="m">2</span><span class="n">.fastq</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">$</span><span class="n">results_file</span><span class="w"> 
+</span><span class="n">done</span><span class="w">
+
+</span></code></pre></div></div>
+
+<p>Here we use cut to grab the first column (corresponding to sample names), and pipe these 
+sample names to uniq to remove diplicates (first column repeats each sample name twice, 
+once for each paired-end file).
+As before, we create an output filename for the current sample being iterated over. 
+In this case, all that’s needed is the sample name stored in $sample.
+Our call to bwa provides the reference, and the two paired-end FASTQ files for this sample a
+s input. Finally, the output of bwa is redirected to $results_file.</p>
+
+<p>Finally, in some cases it might be easier to directly loop over files, rather than 
+working a file containing sample information like samples.txt. The easiest (and safest)
+way to do this is to use Bash’s wildcards to glob files to loop over. The syntax of 
+this is quite easy:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/bin/bash set -e</span><span class="w">
+</span><span class="n">set</span><span class="w"> </span><span class="o">-</span><span class="n">u</span><span class="w">
+</span><span class="n">set</span><span class="w"> </span><span class="o">-</span><span class="n">o</span><span class="w"> </span><span class="n">pipefail</span><span class="w">
+</span><span class="k">for</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">*</span><span class="n">.fastq</span><span class="w">
+</span><span class="n">do</span><span class="w">
+    </span><span class="n">echo</span><span class="w"> </span><span class="s2">"$file: "</span><span class="w"> </span><span class="o">$</span><span class="p">(</span><span class="n">bioawk</span><span class="w"> </span><span class="o">-</span><span class="n">c</span><span class="w"> </span><span class="n">fastx</span><span class="w"> </span><span class="s1">'END {print NR}'</span><span class="w"> </span><span class="o">$</span><span class="n">file</span><span class="p">)</span><span class="w">
+</span><span class="n">done</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Bash’s loops are a handy way of applying commands to numerous files, but have a 
+few downsides. First, compared to the Unix tool <code class="highlighter-rouge">find</code> (which we see in the next 
+section), globbing is not a very powerful way to select certain files. Second, 
+Bash’s loop syntax is lengthy for simple operations, and a bit archaic. 
+Finally, there’s no easy way to parallelize Bash loops in a way that constrains 
+the number of subprocesses used. We’ll see a powerful file-processing Unix idiom 
+in the next section that works better for some tasks where Bash scripts may not be optimal.</p>
+
+<h2 id="automating-file-processing-with-find-and-xargs">Automating File-Processing with <code class="highlighter-rouge">find</code> and <code class="highlighter-rouge">xargs</code></h2>
+<p>In this section, we’ll learn about a more powerful way to specify files matching 
+some criteria using Unix <code class="highlighter-rouge">find</code>. We’ll also see how files printed by find can be 
+passed to another tool called <code class="highlighter-rouge">xargs</code> to create powerful Unix-based processing workflows.</p>
+
+<h3 id="using-find-and-xargs">Using <code class="highlighter-rouge">find</code> and <code class="highlighter-rouge">xargs</code></h3>
+<p>First, let’s look at some common shell problems that <code class="highlighter-rouge">find</code> and <code class="highlighter-rouge">xargs</code> solve. Suppose 
+you have a program named <code class="highlighter-rouge">process_fq</code> that takes multiple filenames through standard in 
+to process. If you wanted to run this program on all files with the suffix .fq, you might run:</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>ls *.fq</td>
+      <td>process_fq</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Your shell expands this wildcard to all matching files in the current directory, and ls prints these filenames. Unfortunately, this leads to a common complication that makes ls and wildcards a fragile solution. Suppose your directory contains a filename called <code class="highlighter-rouge">treatment 02.fq</code>. In this case, ls returns treatment 02.fq along with other files. However, because files are separated by spaces, and this file contains a space, process_fq will interpret treatment 02.fq as two separate files, named treatment and 02.fq. This problem crops up periodically in different ways, and it’s necessary to be aware of when writing file-processing pipelines. Note that this does not occur with file globbing in arguments—if process_fq takes multiple files as arguments, your shell handles this properly:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">process_fq</span><span class="w"> </span><span class="o">*</span><span class="n">.fq</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="error highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Error in eval(expr, envir, enclos): object 'process_fq' not found
+</code></pre></div></div>
+
+<p>Here, your shell automatically escapes the space in the filename <code class="highlighter-rouge">treatment 02.fq</code>, so process_fq will correctly receive the arguments treatment-01.fq, treatment 02.fq, treatment-03.fq. The potentential problem here is that there’s a limit to the number of files that can be specified as arguments. The limit is high, but you can reach it with NGS data. In this case you may get a meassage: <program you="" are="" trying="" to="" use="">: cannot execute [Argument list too long]
+The solution to both of these problems is through `find` and `xargs`, as we will see in the following sections.</program></p>
+
+<h3 id="finding-files-with-find">Finding Files with find</h3>
+
+<p>The basic syntax for find is <code class="highlighter-rouge">find path expression</code>. Path specifies the starting directory for search. Expressions are how we describe which files we want <code class="highlighter-rouge">find</code> to return.</p>
+
+<p>Unlike <code class="highlighter-rouge">ls</code>, <code class="highlighter-rouge">find</code> is recursive (it will search through the directory structure). 
+In fact, running <code class="highlighter-rouge">find</code> on a directory (without other arguments) is a quick way to 
+see it’s structure, <em>e.g.</em>,</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">find</span><span class="w"> </span><span class="n">..</span><span class="o">/</span><span class="m">2018</span><span class="o">-</span><span class="n">workshop</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">head</span><span class="w"> </span><span class="c1">#I limited the number of files displayed with `head`</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>find: ../2018-workshop: No such file or directory
+</code></pre></div></div>
+
+<p>Argument -maxdepth limits the depth of the search: to search only within the 
+current directory, use <code class="highlighter-rouge">find -maxdepth 1 .</code></p>
+
+<p>For the following exercises, I’ll create a small directory system in my current
+directory:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mkdir</span><span class="w"> </span><span class="o">-</span><span class="n">p</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="o">/</span><span class="p">{</span><span class="n">data</span><span class="o">/</span><span class="n">seqs</span><span class="p">,</span><span class="n">scripts</span><span class="p">,</span><span class="n">analysis</span><span class="p">}</span><span class="w">
+</span><span class="n">touch</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">seqs</span><span class="o">/</span><span class="n">zmays</span><span class="p">{</span><span class="n">A</span><span class="p">,</span><span class="n">B</span><span class="p">,</span><span class="n">C</span><span class="p">}</span><span class="err">_</span><span class="n">R</span><span class="p">{</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">}</span><span class="n">.fastq</span><span class="w">
+</span><span class="n">find</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zmays-snps
+zmays-snps/analysis
+zmays-snps/data
+zmays-snps/data/seqs
+zmays-snps/data/seqs/zmaysA_R1.fastq
+zmays-snps/data/seqs/zmaysA_R2.fastq
+zmays-snps/data/seqs/zmaysB_R1.fastq
+zmays-snps/data/seqs/zmaysB_R2.fastq
+zmays-snps/data/seqs/zmaysC_R1.fastq
+zmays-snps/data/seqs/zmaysC_R2.fastq
+zmays-snps/scripts
+</code></pre></div></div>
+
+<h4 id="find-expressions">Find expressions</h4>
+
+<p>Find’s expressions are built from predicates, which are chained together by logical 
+AND and OR operators.  Through expressions, find can match files based on conditions 
+such as creation time or the permissions of the file, as well as advanced combinations 
+of these conditions.</p>
+
+<p>For example, we can use <code class="highlighter-rouge">find</code> to print the names of all files matching the pattern 
+“zmaysB*fastq” (e.g., FASTQ files from sample “B”, both read pairs):</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">find</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">seqs</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="s2">"zmaysB*fastq"</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zmays-snps/data/seqs/zmaysB_R1.fastq
+zmays-snps/data/seqs/zmaysB_R2.fastq
+</code></pre></div></div>
+
+<p>This gives similar results to <code class="highlighter-rouge">ls zmaysB*fastq</code>, as we’d expect. The primary difference is 
+that find reports results separated by newlines and, by default, find is recursive.</p>
+
+<p>Because we only want to return FASTQ files (and not directories with that matching name), 
+we might want to limit our results using the -type option:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">find</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">seqs</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="s2">"zmaysB*fastq"</span><span class="w"> </span><span class="o">-</span><span class="n">type</span><span class="w"> </span><span class="n">f</span><span class="w"> 
+</span></code></pre></div></div>
+
+<p>There are numerous different types you can search for; the most commonly used are f for files, 
+d for directories, and l for links.</p>
+
+<p>By default, <code class="highlighter-rouge">find</code> connects different parts of an expression with logical AND. The find command in 
+this case returns results where the name matches “zmaysB*fastq” and is a file (type “f ”). <code class="highlighter-rouge">find</code> 
+also allows explicitly connecting different parts of an expression with different operators.</p>
+
+<p>If we want to get the names of all FASTQ files from samples A or C, we’ll use the operator -or
+to chain expressions:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">find</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">seqs</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="s2">"zmaysA*fastq"</span><span class="w"> </span><span class="o">-</span><span class="n">or</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="s2">"zmaysC*fastq"</span><span class="w"> </span><span class="o">-</span><span class="n">type</span><span class="w"> </span><span class="n">f</span><span class="w"> 
+</span></code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zmays-snps/data/seqs/zmaysA_R1.fastq
+zmays-snps/data/seqs/zmaysA_R2.fastq
+zmays-snps/data/seqs/zmaysC_R1.fastq
+zmays-snps/data/seqs/zmaysC_R2.fastq
+</code></pre></div></div>
+
+<p>Another way to select these files is with negation:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">find</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">seqs</span><span class="w"> </span><span class="o">-</span><span class="n">type</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="s2">"!"</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="s2">"zmaysC*fastq"</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zmays-snps/data/seqs/zmaysA_R1.fastq
+zmays-snps/data/seqs/zmaysA_R2.fastq
+zmays-snps/data/seqs/zmaysB_R1.fastq
+zmays-snps/data/seqs/zmaysB_R2.fastq
+</code></pre></div></div>
+
+<p>Let’s see another example. Suppose a file named zmaysB_R1-temp.fastq was created by 
+your colleague in zmays-snps/data/seqs but you want to ignore it in your file querying:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">touch</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">seqs</span><span class="o">/</span><span class="n">zmaysB_R1</span><span class="o">-</span><span class="n">temp.fastq</span><span class="w">
+</span><span class="n">find</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">seqs</span><span class="w"> </span><span class="o">-</span><span class="n">type</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="s2">"!"</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="s2">"zmaysC*fastq"</span><span class="w"> </span><span class="o">-</span><span class="n">and</span><span class="w"> </span><span class="s2">"!"</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="s2">"*-temp*"</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zmays-snps/data/seqs/zmaysA_R1.fastq
+zmays-snps/data/seqs/zmaysA_R2.fastq
+zmays-snps/data/seqs/zmaysB_R1.fastq
+zmays-snps/data/seqs/zmaysB_R2.fastq
+</code></pre></div></div>
+
+<p>Note that find’s operators like !, (, and ) should be quoted so as to avoid your shell from 
+interpreting these.</p>
+
+<h3 id="finds--exec-running-commands-on-finds-results">Find’s -exec: Running Commands on find’s Results</h3>
+
+<p>Find’s real strength in bioinformatics is that it allows you to run commands on each 
+of the files find returns, using -exec option.</p>
+
+<p>Continuing from our last example, suppose that a messy collaborator created numerous 
+temporary files. Let’s emulate this (in the zmays-snps/data/seqs directory):</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">touch</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">seqs</span><span class="o">/</span><span class="n">zmays</span><span class="p">{</span><span class="n">A</span><span class="p">,</span><span class="n">C</span><span class="p">}</span><span class="err">_</span><span class="n">R</span><span class="p">{</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">}</span><span class="o">-</span><span class="n">temp.fastq</span><span class="w">
+</span><span class="n">ls</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">seqs</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zmaysA_R1-temp.fastq
+zmaysA_R1.fastq
+zmaysA_R2-temp.fastq
+zmaysA_R2.fastq
+zmaysB_R1-temp.fastq
+zmaysB_R1.fastq
+zmaysB_R2.fastq
+zmaysC_R1-temp.fastq
+zmaysC_R1.fastq
+zmaysC_R2-temp.fastq
+zmaysC_R2.fastq
+</code></pre></div></div>
+
+<p>Although we can delete these files with <code class="highlighter-rouge">rm *-temp.fastq</code>, using <code class="highlighter-rouge">rm</code> with a wildcard 
+in a directory filled with important data files is too risky. Using find’s -exec is a 
+much safer way to delete these files.</p>
+
+<p>For example, let’s use <code class="highlighter-rouge">find - exec</code> and <code class="highlighter-rouge">rm</code> to delete these temporary files:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">find</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">seqs</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="s2">"*-temp.fastq"</span><span class="w"> </span><span class="o">-</span><span class="n">exec</span><span class="w"> </span><span class="n">rm</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="err">\</span><span class="p">;</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Notice the (required!) semicolumn and curly brackets at the end of the command!</p>
+
+<p>In one line, we’re able to pragmatically identify and execute a command on 
+files that match a certain pattern. With find and -exec, a daunting task like 
+processing a directory of 100,000 text files with a program is simple.</p>
+
+<p>In general, <code class="highlighter-rouge">find - exec</code> is most appropriate for quick, simple tasks 
+(like deleting files, changing permissions, etc.). For larger tasks, <code class="highlighter-rouge">xargs</code> 
+(which we’ll see next) is a better choice.</p>
+
+<h3 id="xargs-a-unix-powertool">xargs: A Unix Powertool</h3>
+<p><code class="highlighter-rouge">xargs</code> allows us to take input passed to it from standard in, and use this 
+input as arguments to another program, which allows us to build commands 
+programmatically. Using <code class="highlighter-rouge">find</code> with <code class="highlighter-rouge">xargs</code> is much like <code class="highlighter-rouge">find -exec</code>, but 
+with some added advantages that make <code class="highlighter-rouge">xargs</code> a better choice for larger tasks.</p>
+
+<p>Let’s re-create our messy temporary file directory example again:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">touch</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">seqs</span><span class="o">/</span><span class="n">zmays</span><span class="p">{</span><span class="n">A</span><span class="p">,</span><span class="n">C</span><span class="p">}</span><span class="err">_</span><span class="n">R</span><span class="p">{</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">}</span><span class="o">-</span><span class="n">temp.fastq</span><span class="w">
+</span><span class="n">ls</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">seqs</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zmaysA_R1-temp.fastq
+zmaysA_R1.fastq
+zmaysA_R2-temp.fastq
+zmaysA_R2.fastq
+zmaysB_R1.fastq
+zmaysB_R2.fastq
+zmaysC_R1-temp.fastq
+zmaysC_R1.fastq
+zmaysC_R2-temp.fastq
+zmaysC_R2.fastq
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">xargs</code> works by taking input from standard in and splitting it by spaces, tabs, 
+and newlines into arguments. Then, these arguments are passed to the command supplied. 
+For example, to emulate the behavior of find -exec with rm, we use xargs with rm:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">find</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">seqs</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="s2">"*-temp.fastq"</span><span class="w">
+</span><span class="n">find</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">seqs</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="s2">"*-temp.fastq"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">xargs</span><span class="w"> </span><span class="n">rm</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zmays-snps/data/seqs/zmaysA_R1-temp.fastq
+zmays-snps/data/seqs/zmaysA_R2-temp.fastq
+zmays-snps/data/seqs/zmaysC_R1-temp.fastq
+zmays-snps/data/seqs/zmaysC_R2-temp.fastq
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">xargs </code>passes all arguments received through standard in to the supplied program 
+(rm in this example). This works well for programs like <code class="highlighter-rouge">rm</code>, <code class="highlighter-rouge">touch</code>, <code class="highlighter-rouge">mkdir</code>, and 
+others that take multiple arguments. However, other programs only take a single argument 
+at a time. We can set how many arguments are passed to each command call with xargs’s -n 
+argument. For example, we could call rm four separate times (each on one file) with:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">touch</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">seqs</span><span class="o">/</span><span class="n">zmays</span><span class="p">{</span><span class="n">A</span><span class="p">,</span><span class="n">C</span><span class="p">}</span><span class="err">_</span><span class="n">R</span><span class="p">{</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">}</span><span class="o">-</span><span class="n">temp.fastq</span><span class="w">
+</span><span class="n">find</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">seqs</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="s2">"*-temp.fastq"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">xargs</span><span class="w"> </span><span class="o">-</span><span class="n">n</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="n">rm</span><span class="w">
+</span></code></pre></div></div>
+
+<p>One big benefit of xargs is that it separates the process that specifies 
+the files to operate on (<code class="highlighter-rouge">find</code>) from applying a command to these files (through xargs). 
+If we wanted to inspect a long list of files find returns before running <code class="highlighter-rouge">rm</code> on all 
+files in this list, we could use:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">touch</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">seqs</span><span class="o">/</span><span class="n">zmays</span><span class="p">{</span><span class="n">A</span><span class="p">,</span><span class="n">C</span><span class="p">}</span><span class="err">_</span><span class="n">R</span><span class="p">{</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">}</span><span class="o">-</span><span class="n">temp.fastq</span><span class="w">
+</span><span class="n">find</span><span class="w"> </span><span class="n">zmays</span><span class="o">-</span><span class="n">snps</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">seqs</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="s2">"*-temp.fastq"</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">files</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">delete.txt</span><span class="w">
+</span><span class="n">cat</span><span class="w"> </span><span class="n">files</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">delete.txt</span><span class="w">
+</span><span class="n">cat</span><span class="w"> </span><span class="n">files</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">delete.txt</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">xargs</span><span class="w"> </span><span class="n">rm</span><span class="w">
+</span></code></pre></div></div>
+
+<h4 id="using-xargs-with-replacement-strings-to-apply-commands-to-files">Using xargs with Replacement Strings to Apply Commands to Files</h4>
+
+<p>So far, we used <code class="highlighter-rouge">xargs</code> to build commands purely by adding arguments to the end 
+of the command supplied. xargs’s -I option allows more fine-grained placement of 
+arguments into a command by replacing all instances of a placeholder string ({}) with 
+a single argument. Suppose an imaginary program <code class="highlighter-rouge">fastq_stat</code> takes an input file through 
+the option –in, gathers FASTQ statistics information, and then writes a summary to the 
+file specified by the –out option. We may want our output filenames to be paired with 
+our input filenames and have corresponding names. We can tackle this with <code class="highlighter-rouge">find</code>, <code class="highlighter-rouge">xargs</code>, 
+and <code class="highlighter-rouge">basename</code>:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">find</span><span class="w"> </span><span class="n">.</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="s2">"*.fastq"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">xargs</span><span class="w"> </span><span class="n">basename</span><span class="w"> </span><span class="o">-</span><span class="n">s</span><span class="w"> </span><span class="s2">".fastq"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">xargs</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="p">{}</span><span class="w"> </span><span class="n">fastq_stat</span><span class="w"> </span><span class="o">--</span><span class="k">in</span><span class="w"> </span><span class="p">{}</span><span class="n">.fastq</span><span class="w"> </span><span class="o">--</span><span class="n">out</span><span class="w"> </span><span class="n">..</span><span class="o">/</span><span class="n">summaries</span><span class="o">/</span><span class="p">{}</span><span class="n">.txt</span><span class="w"> 
+</span><span class="c1">## Notice that the BSD xargs will only replace up to five instances of the string specified </span><span class="w">
+</span><span class="c1">## by -I by default, unless more are set with -R.</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Combining <code class="highlighter-rouge">xargs</code> with <code class="highlighter-rouge">basename</code> is a powerful idiom used to apply commands to many files 
+in a way that keeps track of which output file was created by a particular input file. 
+While we could accomplish this other ways, <code class="highlighter-rouge">xargs</code> allows for very quick and incremental 
+command building. <code class="highlighter-rouge">xargs</code> has another very large advantage over for loops: it allows 
+parallelization over a prespecified number of processes.</p>
+
+<h4 id="xargs-and-parallelization">xargs and Parallelization</h4>
+
+<p>An incredibly powerful feature of xargs is that it can launch a limited number of 
+processes in parallel. This is one of xargs’s strengths over Bash’s for loops. 
+Although we can launch multiple background processes with Bash for loops by
+adding the ampersand (&amp;) at the end of the command (e.g., for filename in *.fastq; 
+do program “$filename” &amp; done), this will launch as many processess 
+as there are files we are looping over!</p>
+
+<p><code class="highlighter-rouge">xargs</code> allows us to define the number of processes to run simultaneously with 
+the -P <num> option.  E.g., for the previous example, we could use</num></p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">find</span><span class="w"> </span><span class="n">.</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="s2">"*.fastq"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">xargs</span><span class="w"> </span><span class="n">basename</span><span class="w"> </span><span class="o">-</span><span class="n">s</span><span class="w"> </span><span class="s2">".fastq"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">xargs</span><span class="w"> </span><span class="o">-</span><span class="n">P</span><span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="o">-</span><span class="n">I</span><span class="p">{}</span><span class="w"> </span><span class="n">fastq_stat</span><span class="w"> </span><span class="o">--</span><span class="k">in</span><span class="w"> </span><span class="p">{}</span><span class="n">.fastq</span><span class="w"> </span><span class="o">--</span><span class="n">out</span><span class="w"> </span><span class="n">..</span><span class="o">/</span><span class="n">summaries</span><span class="o">/</span><span class="p">{}</span><span class="n">.txt</span><span class="w"> 
+</span><span class="c1">## Notice that the BSD xargs will only replace up to five instances of the string specified </span><span class="w">
+</span><span class="c1">## by -I by default, unless more are set with -R.</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Admittedly, the price of some powerful xargs workflows is complexity. If you find 
+yourself using xargs mostly to parallelize tasks or you’re writing complicated xargs 
+commands that use basename, it may be worthwhile to learn GNU Parallel. GNU Parallel 
+extends and enhances xargs’s functionality, and fixes several limitations of xargs. 
+For example, GNU parallel can handle redirects in commands, and has a shortcut ({/.}) 
+to extract the base filename without basename. This allows for very short, powerful commands:</p>
+
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">find</span><span class="w"> </span><span class="n">.</span><span class="w"> </span><span class="o">-</span><span class="n">name</span><span class="w"> </span><span class="s2">"*.fastq"</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">parallel</span><span class="w"> </span><span class="o">--</span><span class="n">max</span><span class="o">-</span><span class="n">procs</span><span class="o">=</span><span class="m">6</span><span class="w"> </span><span class="s1">'program {/.} &gt; {/.}-out.txt'</span><span class="w">
+</span></code></pre></div></div>
+
+<p>GNU Parallel has numerous other options and features. If you find yourself using xargs 
+frequently for complicated workflows, I’d recommend learning more about GNU Parallel. 
+The GNU Parallel website has numerous examples and a detailed tutorial.</p>
+
+
+
+<blockquote class="keypoints">
+  <h2>Key Points</h2>
+  <ul>
+    
+    <li><p>Don’t forget the proper header in your scripts</p>
+</li>
+    
+  </ul>
+</blockquote>
+
+</article>
+
+<div class="row">
+  <div class="col-xs-1">
+    <h3 class="text-left">
+      
+      <a href="../02-unix-data-tools/index.html"><span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span><span class="sr-only">previous episode</span></a>
+      
+    </h3>
+  </div>
+  <div class="col-xs-10">
+    
+  </div>
+  <div class="col-xs-1">
+    <h3 class="text-right">
+      
+      <a href="../"><span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span><span class="sr-only">lesson home</span></a>
+      
+    </h3>
+  </div>
+</div>
+
+
+      
+      
+<footer>
+  <div class="row">
+    <div class="col-md-6" align="left">
+      <h4>
+	Copyright &copy; 2016–2018
+	
+	<a href="https://software-carpentry.org">Software Carpentry Foundation</a>
+	
+      </h4>
+    </div>
+    <div class="col-md-6" align="right">
+      <h4>
+	
+	<a href="/edit/gh-pages/_episodes/03-bash-scripts.md">Edit on GitHub</a>
+	
+	/
+	<a href="/blob/gh-pages/CONTRIBUTING.md">Contributing</a>
+	/
+	<a href="/">Source</a>
+	/
+	<a href="/blob/gh-pages/CITATION">Cite</a>
+	/
+	<a href="mailto:dlavrov@iastate.edu">Contact</a>
+      </h4>
+    </div>
+  </div>
+</footer>
+
+      
+    </div>
+    
+<script src="../assets/js/jquery.min.js"></script>
+<script src="../assets/js/bootstrap.min.js"></script>
+<script src="../assets/js/lesson.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-37305346-2', 'auto');
+  ga('send', 'pageview');
+</script>
+
+  </body>
+</html>
