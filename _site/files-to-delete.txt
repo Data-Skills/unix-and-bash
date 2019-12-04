@@ -1,4 +1,0 @@
-zmays-snps/data/seqs/zmaysA_R1-temp.fastq
-zmays-snps/data/seqs/zmaysA_R2-temp.fastq
-zmays-snps/data/seqs/zmaysC_R1-temp.fastq
-zmays-snps/data/seqs/zmaysC_R2-temp.fastq

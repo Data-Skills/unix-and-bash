@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="last-modified" content="2018-03-13 15:05:10 +0300">
+    <meta http-equiv="last-modified" content="2019-12-04 12:56:52 -0600">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- meta "search-domain" used for google site search function google_search() -->
     <meta name="search-domain" value="">
@@ -153,7 +153,7 @@
       <strong>Questions</strong>
       <ul>
 	
-	<li><p>How wto write Bash scripts?</p>
+	<li><p>How to write Bash scripts?</p>
 </li>
 	
       </ul>
@@ -188,14 +188,41 @@ automate file-processing tasks with <code class="highlighter-rouge">find</code> 
 and see a simple makefile.</p>
 
 <h2 id="basic-bash-scripting">Basic Bash Scripting</h2>
-<p>Bash, the shell we’ve used for this workshop, is also a full-fledged scripting language. 
+<p>Bash, the shell we’ve used for this class, is also a full-fledged scripting language. 
 Bash is explicitly designed to make running and interfacing 
-command-line programs as simple as possible (a good characteristic of a shell!). It’s 
-important to note that Python may be a more suitable language for commonly reused or 
+command-line programs as simple as possible (a good characteristic of a shell!). 
+Note that Python may be a more suitable language for commonly reused or 
 advanced pipelines. Python is a more modern, more fully featured scripting language than Bash. 
 Compared to Python, Bash lacks several nice features useful for data-processing scripts. 
 However, Bash is often the best and quickest “duct tape” solution (which we often need 
 in bioinformatics).</p>
+
+<blockquote class="challenge">
+  <h2 id="challenge-1">Challenge 1</h2>
+
+  <p>As you may remember, Unix provides different flavors of shells:</p>
+
+  <ul>
+    <li>Bourne shell (sh)</li>
+    <li>C shell (csh)</li>
+    <li>TC shell (tcsh)</li>
+    <li>Korn shell (ksh)</li>
+    <li>Bourne Again shell (bash)</li>
+  </ul>
+
+  <p>How to check what shell you are using?</p>
+
+  <blockquote class="solution">
+    <h2 id="solution-to-challenge-1">Solution to Challenge 1</h2>
+    <p>$SHELL gives you the default shell. $0 gives you the current shell.</p>
+
+    <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">echo</span><span class="w"> </span><span class="o">$</span><span class="m">0</span><span class="w">
+</span></code></pre></div>    </div>
+
+    <div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bash
+</code></pre></div>    </div>
+  </blockquote>
+</blockquote>
 
 <h3 id="writing-and-running-robust-bash-scripts">Writing and Running Robust Bash Scripts</h3>
 <p>Most Bash scripts in bioinformatics are simply commands organized into a re-runnable 
@@ -361,7 +388,7 @@ fi`</span><span class="w">
 </span></code></pre></div></div>
 
 <p>The set of commands in an if condition can use all features of Unix we’ve mastered so far. 
-For example, chaining commands with logical operators like &amp;&amp; (logical AND) and || (logical OR):</p>
+For example, chaining commands with logical operators like <code class="highlighter-rouge">&amp;&amp;</code> (logical AND) and <code class="highlighter-rouge">||</code> (logical OR):</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/bin/bash</span><span class="w">
 </span><span class="k">if</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="s2">"pattern"</span><span class="w"> </span><span class="n">file_1.txt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">grep</span><span class="w"> </span><span class="s2">"pattern"</span><span class="w"> </span><span class="n">file_2.txt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span><span class="w">
@@ -423,7 +450,7 @@ Table 12-2). For examples:</p>
 </span></code></pre></div></div>
 
 <p>However, Bash provides a simpler syntactic alternative to the test statements: 
-[ -f some_file.txt ] . Note that spaces around and within the brackets are required. 
+<code class="highlighter-rouge">[ -f some_file.txt ]</code>. Note that spaces around and within the brackets are required. 
 This makes for much simpler if statements involving comparisons:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="n">some_file.txt</span><span class="w"> </span><span class="p">]</span><span class="w"> 
@@ -431,8 +458,8 @@ This makes for much simpler if statements involving comparisons:</p>
 </span><span class="n">fi</span><span class="w">
 </span></code></pre></div></div>
 
-<p>When using this syntax, we can chain test expressions with -a as logical AND,
--o as logical OR, ! as negation, and parentheses to group statements. Our 
+<p>When using this syntax, we can chain test expressions with <code class="highlighter-rouge">-a</code> as logical AND,
+<code class="highlighter-rouge">-o</code> as logical OR, <code class="highlighter-rouge">!</code> as negation, and parentheses to group statements. Our 
 familiar &amp;&amp; and || operators won’t work in test, because these are shell operators. 
 As an example, suppose we want to ensure our script has enough arguments and that the 
 input file is readable:</p>
@@ -471,10 +498,15 @@ that select files in directories using some criteria.</p>
 about your raw data: sample name, read pair, and where the file is. Here’s an example 
 (which is also in book’s chapter 12 directory on GitHub):</p>
 
-<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cat</span><span class="w"> </span><span class="n">.</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">samples.txt</span><span class="w">
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cat</span><span class="w"> </span><span class="n">..</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">samples.txt</span><span class="w">
 </span></code></pre></div></div>
 
-<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat: ./data/samples.txt: No such file or directory
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zmaysA	R1	seq/zmaysA_R1.fastq
+zmaysA	R2	seq/zmaysA_R2.fastq
+zmaysB	R1	seq/zmaysB_R1.fastq
+zmaysB	R2	seq/zmaysB_R2.fastq
+zmaysC	R1	seq/zmaysC_R1.fastq
+zmaysC	R2	seq/zmaysC_R2.fastq
 </code></pre></div></div>
 
 <p>The first two columns are called metadata (data about data), which is vital to relating 
@@ -486,7 +518,7 @@ Suppose that we want to loop over every file, gather quality statistics on each 
 output file should have a name based on the input file.</p>
 
 <p>First, we load our filenames into a Bash array, which we can then loop over. 
-Bash arrays can be created manually specific elements can be extracted using:</p>
+Bash arrays can be created manually; specific elements can be extracted using:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sample_names</span><span class="o">=</span><span class="p">(</span><span class="n">zmaysA</span><span class="w"> </span><span class="n">zmaysB</span><span class="w"> </span><span class="n">zmaysC</span><span class="p">)</span><span class="w">
 </span><span class="n">echo</span><span class="w"> </span><span class="o">$</span><span class="p">{</span><span class="n">sample_names</span><span class="p">[</span><span class="m">0</span><span class="p">]}</span><span class="w">
@@ -502,20 +534,26 @@ elements can be printed with <code class="highlighter-rouge">echo ${#sample_name
 
 <p>But creating Bash arrays by hand is tedious and error prone, especially because we already 
 have our filenames in our sample.txt file. The beauty of Bash is that we can use a command 
-substitution to construct Bash arrays (though this can be dangerous; see the following warning). 
+substitution to construct Bash arrays. 
 Because we want to loop over each file, we need to extract the third column using cut -f 3 from 
 samples.txt. Demonstrating this in the shell:</p>
 
-<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sample_files</span><span class="o">=</span><span class="p">(</span><span class="o">$</span><span class="p">(</span><span class="n">cut</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="n">.</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">samples.txt</span><span class="p">))</span><span class="w">
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sample_files</span><span class="o">=</span><span class="p">(</span><span class="o">$</span><span class="p">(</span><span class="n">cut</span><span class="w"> </span><span class="o">-</span><span class="n">f</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="n">..</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">samples.txt</span><span class="p">))</span><span class="w">
 </span><span class="n">echo</span><span class="w"> </span><span class="o">$</span><span class="p">{</span><span class="n">sample_files</span><span class="p">[</span><span class="o">@</span><span class="p">]}</span><span class="w">
 </span></code></pre></div></div>
 
-<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cut: ./data/samples.txt: No such file or directory
+<div class="output highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seq/zmaysA_R1.fastq seq/zmaysA_R2.fastq seq/zmaysB_R1.fastq seq/zmaysB_R2.fastq seq/zmaysC_R1.fastq seq/zmaysC_R2.fastq
 </code></pre></div></div>
 
-<p>NOTE: this approach only works if our filenames only contain alphanumeric characters, 
+<blockquote class="callout">
+  <h2 id="important">IMPORTANT:</h2>
+  <p>This approach only works if our filenames only contain alphanumeric characters, 
 (_), and (-)! If spaces, tabs, newlines, or special characters like * end up in filenames, 
-it will break this approach. With our filenames in a Bash array, we’re almost ready to 
+it will break this approach.</p>
+
+</blockquote>
+
+<p>With our filenames in a Bash array, we’re almost ready to 
 loop over them. The last component is to strip the path and extension from each filename, 
 leaving us with the most basic filename we can use to create an output filename. The Unix 
 program <code class="highlighter-rouge">basename</code> strips paths from filenames:</p>
@@ -559,11 +597,13 @@ from a filename (or alternatively using the argument -s):</p>
 </span><span class="n">done</span><span class="w">
 </span></code></pre></div></div>
 
-<p>That’s all there is to it. A more refined script might add a few extra features, 
+<p>A more refined script might add a few extra features, 
 such as using an if statement to provide a friendly error if a FASTQ file does 
 not exist or a call to echo to report which sample is currently being processed.</p>
 
-<p>This script was easy to write because our processing steps took a single file as 
+<h4 id="combining-two-or-more-input-files-into-a-single-output-file">Combining two or more input files into a single output file</h4>
+
+<p>The previous script was easy to write because our processing steps took a single file as 
 input, and created a single file as output. However, many bioinformatics pipelines 
 combine two or more input files into a single output file. Aligning paired-end 
 reads is a prime example: most aligners take two input FASTQ files and return one 
@@ -591,7 +631,7 @@ is named zmays_AGPv3.20.fa:</p>
         </span><span class="c1"># create an output file from the sample name</span><span class="w">
 </span><span class="n">results_file</span><span class="o">=</span><span class="s2">"${sample}.sam"</span><span class="w">
 
-</span><span class="n">bwa</span><span class="w"> </span><span class="n">mem</span><span class="w"> </span><span class="o">$</span><span class="n">reference</span><span class="w"> </span><span class="o">$</span><span class="p">{</span><span class="n">sample</span><span class="p">}</span><span class="err">_</span><span class="n">R</span><span class="m">1</span><span class="n">.fastq</span><span class="w"> </span><span class="o">$</span><span class="p">{</span><span class="n">sample</span><span class="p">}</span><span class="err">_</span><span class="n">R</span><span class="m">2</span><span class="n">.fastq</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">$</span><span class="n">results_file</span><span class="w"> 
+</span><span class="n">bwa</span><span class="w"> </span><span class="n">mem</span><span class="w"> </span><span class="o">$</span><span class="n">reference</span><span class="w"> </span><span class="o">$</span><span class="p">{</span><span class="n">sample</span><span class="p">}</span><span class="err">_</span><span class="n">R1.fastq</span><span class="w"> </span><span class="o">$</span><span class="p">{</span><span class="n">sample</span><span class="p">}</span><span class="err">_</span><span class="n">R2.fastq</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">$</span><span class="n">results_file</span><span class="w"> 
 </span><span class="n">done</span><span class="w">
 
 </span></code></pre></div></div>
@@ -601,8 +641,10 @@ sample names to uniq to remove diplicates (first column repeats each sample name
 once for each paired-end file).
 As before, we create an output filename for the current sample being iterated over. 
 In this case, all that’s needed is the sample name stored in $sample.
-Our call to bwa provides the reference, and the two paired-end FASTQ files for this sample a
-s input. Finally, the output of bwa is redirected to $results_file.</p>
+Our call to bwa provides the reference, and the two paired-end FASTQ files for this sample 
+as input. Finally, the output of bwa is redirected to $results_file.</p>
+
+<h4 id="globbing">Globbing</h4>
 
 <p>Finally, in some cases it might be easier to directly loop over files, rather than 
 working a file containing sample information like samples.txt. The easiest (and safest)
@@ -636,22 +678,13 @@ passed to another tool called <code class="highlighter-rouge">xargs</code> to cr
 you have a program named <code class="highlighter-rouge">process_fq</code> that takes multiple filenames through standard in 
 to process. If you wanted to run this program on all files with the suffix .fq, you might run:</p>
 
-<table>
-  <tbody>
-    <tr>
-      <td>ls *.fq</td>
-      <td>process_fq</td>
-    </tr>
-  </tbody>
-</table>
+<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ls</span><span class="w"> </span><span class="o">*</span><span class="n">.fq</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">process_fq</span><span class="w">
+</span></code></pre></div></div>
 
-<p>Your shell expands this wildcard to all matching files in the current directory, and ls prints these filenames. Unfortunately, this leads to a common complication that makes ls and wildcards a fragile solution. Suppose your directory contains a filename called <code class="highlighter-rouge">treatment 02.fq</code>. In this case, ls returns treatment 02.fq along with other files. However, because files are separated by spaces, and this file contains a space, process_fq will interpret treatment 02.fq as two separate files, named treatment and 02.fq. This problem crops up periodically in different ways, and it’s necessary to be aware of when writing file-processing pipelines. Note that this does not occur with file globbing in arguments—if process_fq takes multiple files as arguments, your shell handles this properly:</p>
+<p>Your shell expands this wildcard to all matching files in the current directory, and <code class="highlighter-rouge">ls</code> prints these filenames. Unfortunately, this leads to a common complication that makes ls and wildcards a fragile solution. Suppose your directory contains a filename called <code class="highlighter-rouge">treatment 02.fq</code>. In this case, ls returns treatment 02.fq along with other files. However, because files are separated by spaces, and this file contains a space, process_fq will interpret treatment 02.fq as two separate files, named treatment and 02.fq. This problem crops up periodically in different ways, and it’s necessary to be aware of when writing file-processing pipelines. Note that this does not occur with file globbing in arguments—if process_fq takes multiple files as arguments, your shell handles this properly:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">process_fq</span><span class="w"> </span><span class="o">*</span><span class="n">.fq</span><span class="w">
 </span></code></pre></div></div>
-
-<div class="error highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Error in eval(expr, envir, enclos): object 'process_fq' not found
-</code></pre></div></div>
 
 <p>Here, your shell automatically escapes the space in the filename <code class="highlighter-rouge">treatment 02.fq</code>, so process_fq will correctly receive the arguments treatment-01.fq, treatment 02.fq, treatment-03.fq. The potentential problem here is that there’s a limit to the number of files that can be specified as arguments. The limit is high, but you can reach it with NGS data. In this case you may get a meassage: <program you="" are="" trying="" to="" use="">: cannot execute [Argument list too long]
 The solution to both of these problems is through `find` and `xargs`, as we will see in the following sections.</program></p>
@@ -963,7 +996,7 @@ The GNU Parallel website has numerous examples and a detailed tutorial.</p>
   <div class="row">
     <div class="col-md-6" align="left">
       <h4>
-	Copyright &copy; 2016–2018
+	Copyright &copy; 2016–2019
 	
 	<a href="https://software-carpentry.org">Software Carpentry Foundation</a>
 	

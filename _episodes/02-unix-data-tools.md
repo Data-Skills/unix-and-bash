@@ -431,7 +431,7 @@ ls -lh ../data/Mus_musculus.GRCm38.75_chr1.bed
 
 
 ~~~
--rw-r--r--  1 dlavrov  staff   1.6M Mar  6 06:35 ../data/Mus_musculus.GRCm38.75_chr1.bed
+-rw-r--r--  1 dlavrov  staff   1.6M Dec  4 11:27 ../data/Mus_musculus.GRCm38.75_chr1.bed
 ~~~
 {: .output}
 
@@ -1430,7 +1430,7 @@ echo "chr1:28427874-28425431" | sed -E 's/^(chr[^:]+):([0-9]+)-([0-9]+)/\1\t\2\t
 
 
 ~~~
-chr1	28427874	28425431
+chr1t28427874t28425431
 ~~~
 {: .output}
 
@@ -1455,8 +1455,8 @@ Note that we capture chunks of text by surrounding matching pattersn with ( and 
 > > 
 > > 
 > > ~~~
-> > chr1	28427874	28425431
-> > chr1	28427874	28425431
+> > chr1t28427874t28425431
+> > chr1t28427874t28425431
 > > chr1	28427874	28425431
 > > ~~~
 > > {: .output}
@@ -1650,7 +1650,7 @@ ls -l fqin
 
 
 ~~~
-prw-r--r--  1 dlavrov  staff  0 Mar 13 15:05 fqin
+prw-r--r--  1 dlavrov  staff  0 Dec  4 12:56 fqin
 ~~~
 {: .output}
 
@@ -2246,7 +2246,7 @@ file ../data/utf8.txt
 
 
 ~~~
-../data/utf8.txt: UTF-8 Unicode English text
+../data/utf8.txt: UTF-8 Unicode text
 ~~~
 {: .output}
 

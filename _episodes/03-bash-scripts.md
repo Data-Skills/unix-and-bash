@@ -3,7 +3,7 @@ title: "Shell Scripting, Writing Pipelines, and Parallelizing Tasks"
 teaching: 100
 exercises: 20
 questions:
-- "How wto write Bash scripts?"
+- "How to write Bash scripts?"
 objectives:
 - "To be able to write simple scripts."
 keypoints:
@@ -25,14 +25,45 @@ automate file-processing tasks with `find` and `xargs`, run pipelines in paralle
 and see a simple makefile. 
 
 ## Basic Bash Scripting
-Bash, the shell we’ve used for this workshop, is also a full-fledged scripting language. 
+Bash, the shell we’ve used for this class, is also a full-fledged scripting language. 
 Bash is explicitly designed to make running and interfacing 
-command-line programs as simple as possible (a good characteristic of a shell!). It’s 
-important to note that Python may be a more suitable language for commonly reused or 
+command-line programs as simple as possible (a good characteristic of a shell!). 
+Note that Python may be a more suitable language for commonly reused or 
 advanced pipelines. Python is a more modern, more fully featured scripting language than Bash. 
 Compared to Python, Bash lacks several nice features useful for data-processing scripts. 
 However, Bash is often the best and quickest “duct tape” solution (which we often need 
 in bioinformatics).
+
+> ## Challenge 1
+>
+> As you may remember, Unix provides different flavors of shells:
+>
+> * Bourne shell (sh)
+> * C shell (csh)
+> * TC shell (tcsh)
+> * Korn shell (ksh)
+> * Bourne Again shell (bash)
+>
+> How to check what shell you are using?
+>
+>
+> > ## Solution to Challenge 1
+> > $SHELL gives you the default shell. $0 gives you the current shell.
+> > 
+> > ~~~
+> > echo $0
+> > ~~~
+> > {: .language-r}
+> > 
+> > 
+> > 
+> > 
+> > ~~~
+> > bash
+> > ~~~
+> > {: .output}
+> {: .solution}
+{: .challenge}
 
 ### Writing and Running Robust Bash Scripts
 Most Bash scripts in bioinformatics are simply commands organized into a re-runnable 
@@ -234,7 +265,7 @@ fi`
 {: .language-r}
 
 The set of commands in an if condition can use all features of Unix we’ve mastered so far. 
-For example, chaining commands with logical operators like && (logical AND) and || (logical OR):
+For example, chaining commands with logical operators like `&&` (logical AND) and `||` (logical OR):
 
 
 ~~~
@@ -313,7 +344,7 @@ fi
 {: .language-r}
 
 However, Bash provides a simpler syntactic alternative to the test statements: 
-[ -f some_file.txt ] . Note that spaces around and within the brackets are required. 
+`[ -f some_file.txt ]`. Note that spaces around and within the brackets are required. 
 This makes for much simpler if statements involving comparisons:
 
 
@@ -324,8 +355,8 @@ fi
 ~~~
 {: .language-r}
 
-When using this syntax, we can chain test expressions with -a as logical AND,
--o as logical OR, ! as negation, and parentheses to group statements. Our 
+When using this syntax, we can chain test expressions with `-a` as logical AND,
+`-o` as logical OR, `!` as negation, and parentheses to group statements. Our 
 familiar && and || operators won’t work in test, because these are shell operators. 
 As an example, suppose we want to ensure our script has enough arguments and that the 
 input file is readable:
@@ -367,7 +398,7 @@ about your raw data: sample name, read pair, and where the file is. Here’s an 
 
 
 ~~~
-cat ./data/samples.txt
+cat ../data/samples.txt
 ~~~
 {: .language-r}
 
@@ -375,10 +406,14 @@ cat ./data/samples.txt
 
 
 ~~~
-cat: ./data/samples.txt: No such file or directory
+zmaysA	R1	seq/zmaysA_R1.fastq
+zmaysA	R2	seq/zmaysA_R2.fastq
+zmaysB	R1	seq/zmaysB_R1.fastq
+zmaysB	R2	seq/zmaysB_R2.fastq
+zmaysC	R1	seq/zmaysC_R1.fastq
+zmaysC	R2	seq/zmaysC_R2.fastq
 ~~~
 {: .output}
-
 
 The first two columns are called metadata (data about data), which is vital to relating 
 sample information to their physical files. Note that the metadata is also in the filename 
@@ -389,7 +424,7 @@ Suppose that we want to loop over every file, gather quality statistics on each 
 output file should have a name based on the input file.
 
 First, we load our filenames into a Bash array, which we can then loop over. 
-Bash arrays can be created manually specific elements can be extracted using:
+Bash arrays can be created manually; specific elements can be extracted using:
 
 
 ~~~
@@ -413,13 +448,13 @@ elements can be printed with `echo ${#sample_names[@]}`.
 
 But creating Bash arrays by hand is tedious and error prone, especially because we already 
 have our filenames in our sample.txt file. The beauty of Bash is that we can use a command 
-substitution to construct Bash arrays (though this can be dangerous; see the following warning). 
+substitution to construct Bash arrays. 
 Because we want to loop over each file, we need to extract the third column using cut -f 3 from 
 samples.txt. Demonstrating this in the shell:
 
 
 ~~~
-sample_files=($(cut -f 3 ./data/samples.txt))
+sample_files=($(cut -f 3 ../data/samples.txt))
 echo ${sample_files[@]}
 ~~~
 {: .language-r}
@@ -428,13 +463,18 @@ echo ${sample_files[@]}
 
 
 ~~~
-cut: ./data/samples.txt: No such file or directory
+seq/zmaysA_R1.fastq seq/zmaysA_R2.fastq seq/zmaysB_R1.fastq seq/zmaysB_R2.fastq seq/zmaysC_R1.fastq seq/zmaysC_R2.fastq
 ~~~
 {: .output}
 
-NOTE: this approach only works if our filenames only contain alphanumeric characters, 
-(_), and (-)! If spaces, tabs, newlines, or special characters like * end up in filenames, 
-it will break this approach. With our filenames in a Bash array, we’re almost ready to 
+> ## IMPORTANT:
+> This approach only works if our filenames only contain alphanumeric characters, 
+> (_), and (-)! If spaces, tabs, newlines, or special characters like * end up in filenames, 
+> it will break this approach. 
+>
+{: .callout}
+
+With our filenames in a Bash array, we’re almost ready to 
 loop over them. The last component is to strip the path and extension from each filename, 
 leaving us with the most basic filename we can use to create an output filename. The Unix 
 program `basename` strips paths from filenames:
@@ -497,11 +537,13 @@ done
 ~~~
 {: .language-r}
 
-That’s all there is to it. A more refined script might add a few extra features, 
+A more refined script might add a few extra features, 
 such as using an if statement to provide a friendly error if a FASTQ file does 
 not exist or a call to echo to report which sample is currently being processed.
 
-This script was easy to write because our processing steps took a single file as 
+#### Combining two or more input files into a single output file
+
+The previous script was easy to write because our processing steps took a single file as 
 input, and created a single file as output. However, many bioinformatics pipelines 
 combine two or more input files into a single output file. Aligning paired-end 
 reads is a prime example: most aligners take two input FASTQ files and return one 
@@ -542,8 +584,10 @@ sample names to uniq to remove diplicates (first column repeats each sample name
 once for each paired-end file).
 As before, we create an output filename for the current sample being iterated over. 
 In this case, all that’s needed is the sample name stored in $sample.
-Our call to bwa provides the reference, and the two paired-end FASTQ files for this sample a
-s input. Finally, the output of bwa is redirected to $results_file.
+Our call to bwa provides the reference, and the two paired-end FASTQ files for this sample 
+as input. Finally, the output of bwa is redirected to $results_file.
+
+#### Globbing
 
 Finally, in some cases it might be easier to directly loop over files, rather than 
 working a file containing sample information like samples.txt. The easiest (and safest)
@@ -580,22 +624,19 @@ First, let’s look at some common shell problems that `find` and `xargs` solve.
 you have a program named `process_fq` that takes multiple filenames through standard in 
 to process. If you wanted to run this program on all files with the suffix .fq, you might run:
 
-ls *.fq | process_fq
 
-Your shell expands this wildcard to all matching files in the current directory, and ls prints these filenames. Unfortunately, this leads to a common complication that makes ls and wildcards a fragile solution. Suppose your directory contains a filename called `treatment 02.fq`. In this case, ls returns treatment 02.fq along with other files. However, because files are separated by spaces, and this file contains a space, process_fq will interpret treatment 02.fq as two separate files, named treatment and 02.fq. This problem crops up periodically in different ways, and it’s necessary to be aware of when writing file-processing pipelines. Note that this does not occur with file globbing in arguments—if process_fq takes multiple files as arguments, your shell handles this properly:
+~~~
+ls *.fq | process_fq
+~~~
+{: .language-r}
+
+Your shell expands this wildcard to all matching files in the current directory, and `ls` prints these filenames. Unfortunately, this leads to a common complication that makes ls and wildcards a fragile solution. Suppose your directory contains a filename called `treatment 02.fq`. In this case, ls returns treatment 02.fq along with other files. However, because files are separated by spaces, and this file contains a space, process_fq will interpret treatment 02.fq as two separate files, named treatment and 02.fq. This problem crops up periodically in different ways, and it’s necessary to be aware of when writing file-processing pipelines. Note that this does not occur with file globbing in arguments—if process_fq takes multiple files as arguments, your shell handles this properly:
 
 
 ~~~
 process_fq *.fq
 ~~~
 {: .language-r}
-
-
-
-~~~
-Error in eval(expr, envir, enclos): object 'process_fq' not found
-~~~
-{: .error}
 
 Here, your shell automatically escapes the space in the filename `treatment 02.fq`, so process_fq will correctly receive the arguments treatment-01.fq, treatment 02.fq, treatment-03.fq. The potentential problem here is that there’s a limit to the number of files that can be specified as arguments. The limit is high, but you can reach it with NGS data. In this case you may get a meassage: <program you are trying to use>: cannot execute [Argument list too long]
 The solution to both of these problems is through `find` and `xargs`, as we will see in the following sections.
