@@ -305,7 +305,7 @@ in your shell configuration file, which is either ~/.bashrc or ~/.profile:
 
 ~~~
 # inspect the first and last 3 lines of a file
-i() { (head -n 2; tail -n 2) < "$1" | column -t}
+i() { (head -n 2; tail -n 2) < "$1" | column -t; }
 ~~~
 {: .language-r}
 
