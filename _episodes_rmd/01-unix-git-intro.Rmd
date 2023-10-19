@@ -163,7 +163,7 @@ to /dev/null disappears, which is why it’s sometimes jokingly referred to as a
 
 > ## Tip: `tail -f`
 > 
-> One way to write output to monitor redirected stanard output or error is to use
+> One way to write output to monitor redirected standard output or error is to use
 > `tail -f` with the output/error filename. 
 >
 {: .callout}
