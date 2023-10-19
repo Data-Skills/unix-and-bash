@@ -379,18 +379,17 @@ As discussed earlier, we quote variables (especially those from human input);
 this is a good practice and prevents issues with special characters.
 
 ### Processing Files with Bash Using `for` Loops and Globbing
-In bioinformatics, most of our data is split across multiple files and the same workflow 
-to each of these files. Looping over files with Bash’s for loop is the simplest way to 
-accomplish this.
+In bioinformatics, most of our data is split across multiple files. Usually, we want to
+apply the same workflow to each of these files. Looping over files with Bash’s for loop 
+is the simplest way to accomplish this.
 
 There are three essential parts to creating a pipeline to process a set of files:
 * Selecting which files to apply the commands to
 * Looping over the data and applying the commands
 * Keeping track of the names of any output files created
 
-There are two common ways to select which files to apply a bioinformatics workflow to: 
-approaches that start with a text file containing information about samples and approaches 
-that select files in directories using some criteria. 
+There are two common ways to select files: either start with a text file containing 
+information about samples or directly select files in directories using some criteria. 
 
 In the first approach, you may have a file called samples.txt that tells you basic information 
 about your raw data: sample name, read pair, and where the file is. Here’s an example 
@@ -446,9 +445,7 @@ zmaysC
 All elements can be extracted with the cryptic-looking `echo ${sample_files[@]}` and the number of
 elements can be printed with `echo ${#sample_names[@]}`.
 
-But creating Bash arrays by hand is tedious and error prone, especially because we already 
-have our filenames in our sample.txt file. The beauty of Bash is that we can use a command 
-substitution to construct Bash arrays. 
+Better yet, we can use a command substitution to construct Bash arrays. 
 Because we want to loop over each file, we need to extract the third column using cut -f 3 from 
 samples.txt. Demonstrating this in the shell:
 
@@ -543,12 +540,11 @@ not exist or a call to echo to report which sample is currently being processed.
 
 #### Combining two or more input files into a single output file
 
-The previous script was easy to write because our processing steps took a single file as 
-input, and created a single file as output. However, many bioinformatics pipelines 
-combine two or more input files into a single output file. Aligning paired-end 
-reads is a prime example: most aligners take two input FASTQ files and return one 
-output alignment file. Suppose that we use the aligner BWA and our genome reference 
-is named zmays_AGPv3.20.fa:
+Many bioinformatics pipelines combine two or more input files into a single output file. 
+Aligning paired-end reads is a prime example: most aligners take two input FASTQ files 
+and return one output alignment file. Suppose that we use the aligner BWA and our genome 
+reference is named zmays_AGPv3.20.fa (notice, that you might need to add `module load bwa`
+to the script, if you are running it on an HPC cluster):
 
 
 ~~~
@@ -580,12 +576,12 @@ done
 {: .language-r}
 
 Here we use cut to grab the first column (corresponding to sample names), and pipe these 
-sample names to uniq to remove diplicates (first column repeats each sample name twice, 
+sample names to `uniq` to remove diplicates (first column repeats each sample name twice, 
 once for each paired-end file).
 As before, we create an output filename for the current sample being iterated over. 
 In this case, all that’s needed is the sample name stored in $sample.
-Our call to bwa provides the reference, and the two paired-end FASTQ files for this sample 
-as input. Finally, the output of bwa is redirected to $results_file.
+Our call to `bwa` provides the reference, and the two paired-end FASTQ files for this sample 
+as input. Finally, the output of `bwa` is redirected to the `$results_file`.
 
 #### Globbing
 
@@ -607,9 +603,8 @@ done
 {: .language-r}
 
 Bash’s loops are a handy way of applying commands to numerous files, but have a 
-few downsides. First, compared to the Unix tool `find` (which we see in the next 
-section), globbing is not a very powerful way to select certain files. Second, 
-Bash’s loop syntax is lengthy for simple operations, and a bit archaic. 
+few downsides. First, globbing is not the most powerful way to select certain files
+(see next section). Second, Bash’s loop syntax is lengthy for simple operations, and a bit archaic. 
 Finally, there’s no easy way to parallelize Bash loops in a way that constrains 
 the number of subprocesses used. We’ll see a powerful file-processing Unix idiom 
 in the next section that works better for some tasks where Bash scripts may not be optimal.
@@ -630,7 +625,7 @@ ls *.fq | process_fq
 ~~~
 {: .language-r}
 
-Your shell expands this wildcard to all matching files in the current directory, and `ls` prints these filenames. Unfortunately, this leads to a common complication that makes ls and wildcards a fragile solution. Suppose your directory contains a filename called `treatment 02.fq`. In this case, ls returns treatment 02.fq along with other files. However, because files are separated by spaces, and this file contains a space, process_fq will interpret treatment 02.fq as two separate files, named treatment and 02.fq. This problem crops up periodically in different ways, and it’s necessary to be aware of when writing file-processing pipelines. Note that this does not occur with file globbing in arguments—if process_fq takes multiple files as arguments, your shell handles this properly:
+Your shell expands this wildcard to all matching files in the current directory, and `ls` prints these filenames. Unfortunately, this leads to a common complication that makes ls and wildcards a fragile solution. Suppose your directory contains a filename called `treatment 02.fq`. In this case, `ls` returns `reatment 02.fq` along with other files. However, because files are separated by spaces, and this file contains a space, `process_fq` will interpret `treatment 02.fq` as two separate files, named `reatment` and `02.fq`. This problem crops up periodically in different ways, and it’s necessary to be aware of when writing file-processing pipelines. Note that this does not occur with file globbing in arguments—if process_fq takes multiple files as arguments, your shell handles this properly:
 
 
 ~~~
@@ -643,7 +638,8 @@ The solution to both of these problems is through `find` and `xargs`, as we will
 
 ### Finding Files with find
 
-The basic syntax for find is `find path expression`. Path specifies the starting directory for search. Expressions are how we describe which files we want `find` to return. 
+The basic syntax for find is `find path expression`. Path specifies the starting directory for search. 
+Expressions are how we describe which files we want `find` to return. 
 
 Unlike `ls`, `find` is recursive (it will search through the directory structure). 
 In fact, running `find` on a directory (without other arguments) is a quick way to 
@@ -651,7 +647,7 @@ see it's structure, _e.g._,
 
 
 ~~~
-find ../2018-workshop | head #I limited the number of files displayed with `head`
+find / | head #I limited the number of files displayed with `head`
 ~~~
 {: .language-r}
 
@@ -659,7 +655,16 @@ find ../2018-workshop | head #I limited the number of files displayed with `head
 
 
 ~~~
-find: ../2018-workshop: No such file or directory
+/
+/research
+/sw
+/WebApps
+/WebApps/hello.wsgi
+/.HFS+ Private Directory Data
+/home
+/libpeerconnection.log.0.gz
+/usr
+/usr/bin
 ~~~
 {: .output}
 
@@ -764,7 +769,7 @@ Another way to select these files is with negation:
 
 
 ~~~
-find zmays-snps/data/seqs -type f "!" -name "zmaysC*fastq"
+find zmays-snps/data/seqs -type f "!" -name "zmaysB*fastq"
 ~~~
 {: .language-r}
 
@@ -774,8 +779,8 @@ find zmays-snps/data/seqs -type f "!" -name "zmaysC*fastq"
 ~~~
 zmays-snps/data/seqs/zmaysA_R1.fastq
 zmays-snps/data/seqs/zmaysA_R2.fastq
-zmays-snps/data/seqs/zmaysB_R1.fastq
-zmays-snps/data/seqs/zmaysB_R2.fastq
+zmays-snps/data/seqs/zmaysC_R1.fastq
+zmays-snps/data/seqs/zmaysC_R2.fastq
 ~~~
 {: .output}
 
@@ -859,7 +864,13 @@ In general, `find - exec` is most appropriate for quick, simple tasks
 (which we'll see next) is a better choice.
 
 ### xargs: A Unix Powertool
-`xargs` allows us to take input passed to it from standard in, and use this 
+
+`xargs` reads data from standard input (stdin) and executes the command (supplied to it as an argument) 
+one or more times based on the input read. Any spaces, tabs, and newlines in the input are treated as delimiters, 
+while blank lines are ignored. If no command is specified, `xargs` executes `echo`. (Notice, 
+that `echo` by itself does not read from standard input!)
+
+`xargs` allows us to take input from standard in, and use this 
 input as arguments to another program, which allows us to build commands 
 programmatically. Using `find` with `xargs` is much like `find -exec`, but 
 with some added advantages that make `xargs` a better choice for larger tasks.
@@ -892,7 +903,7 @@ zmaysC_R2.fastq
 
 `xargs` works by taking input from standard in and splitting it by spaces, tabs, 
 and newlines into arguments. Then, these arguments are passed to the command supplied. 
-For example, to emulate the behavior of find -exec with rm, we use xargs with rm:
+For example, to emulate the behavior of `find -exec` with `rm`, we use `xargs` with `rm`:
 
 
 ~~~
@@ -941,10 +952,9 @@ cat files-to-delete.txt | xargs rm
 
 #### Using xargs with Replacement Strings to Apply Commands to Files
 
-So far, we used `xargs` to build commands purely by adding arguments to the end 
-of the command supplied. xargs’s -I option allows more fine-grained placement of 
-arguments into a command by replacing all instances of a placeholder string ({}) with 
-a single argument. Suppose an imaginary program `fastq_stat` takes an input file through 
+In addition to adding arguments at the end of the command, `xargs` can place 
+them in predefined positions. This is done with the -I option and a placeholder string ({}). 
+Suppose an imaginary program `fastq_stat` takes an input file through 
 the option --in, gathers FASTQ statistics information, and then writes a summary to the 
 file specified by the --out option. We may want our output filenames to be paired with 
 our input filenames and have corresponding names. We can tackle this with `find`, `xargs`, 
@@ -974,7 +984,7 @@ do program "$filename" & done), this will launch as many processess
 as there are files we are looping over!
 
 `xargs` allows us to define the number of processes to run simultaneously with 
-the -P <num> option.  E.g., for the previous example, we could use
+the -P <num> option.  _E.g._, for the previous example, we could use
 
 
 ~~~
@@ -984,11 +994,11 @@ find . -name "*.fastq" | xargs basename -s ".fastq" | xargs -P 6 -I{} fastq_stat
 ~~~
 {: .language-r}
 
-Admittedly, the price of some powerful xargs workflows is complexity. If you find 
-yourself using xargs mostly to parallelize tasks or you’re writing complicated xargs 
-commands that use basename, it may be worthwhile to learn GNU Parallel. GNU Parallel 
-extends and enhances xargs’s functionality, and fixes several limitations of xargs. 
-For example, GNU parallel can handle redirects in commands, and has a shortcut ({/.}) 
+Admittedly, the price of some powerful `xargs` workflows is complexity. If you find 
+yourself using xargs mostly to parallelize tasks or you’re writing complicated `xargs` 
+commands that use `basename`, it may be worthwhile to learn GNU `Parallel`. GNU `Parallel` 
+extends and enhances `xargs`’s functionality, and fixes several limitations of` xargs`. 
+For example, GNU `parallel` can handle redirects in commands, and has a shortcut ({/.}) 
 to extract the base filename without basename. This allows for very short, powerful commands:
 
 

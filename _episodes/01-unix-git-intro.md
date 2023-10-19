@@ -422,8 +422,7 @@ mkdir results-`date +%F`
 
 
 ~~~
-mkdir: results-2019-12-04: File exists
-mkdir: results-2019-12-04: File exists
+mkdir: results-2019-12-06: File exists
 ~~~
 {: .output}
 
