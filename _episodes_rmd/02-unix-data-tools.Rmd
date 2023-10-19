@@ -224,7 +224,7 @@ in your shell configuration file, which is either ~/.bashrc or ~/.profile:
 
 ```{bash eval=FALSE}
 # inspect the first and last 3 lines of a file
-i() { (head -n 2; tail -n 2) < "$1" | column -t}
+i() { (head -n 2; tail -n 2) < "$1" | column -t; }
 ```
 
 `head` is also useful for taking a peek at data resulting from a Unix pipeline:
